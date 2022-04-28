@@ -24,11 +24,10 @@ struct DriveSettings {
 void setup() {
 	// set up the LCD's number of columns and rows: 
 	uim.Begin();
-
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
 
-  uim.Display();
+  uim.HandleEvents();
 }
