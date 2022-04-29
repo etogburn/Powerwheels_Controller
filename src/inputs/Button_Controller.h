@@ -7,12 +7,11 @@
 
 class Button_Controller {
 public:
-    Button_Controller(uint8_t id, Adafruit_RGBLCDShield lcd);
-    bool IsPressed();
+    Button_Controller(uint8_t id);
+    bool IsPressed(uint8_t);
     long GetTimePressed();
 
 private:
-    Adafruit_RGBLCDShield lcd_;
     uint8_t id_ = 0;
     bool isPressed_ = false;
     long timePressed_ = 0;

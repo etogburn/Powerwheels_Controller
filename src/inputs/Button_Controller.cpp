@@ -1,13 +1,10 @@
 #include "Button_Controller.h"
 
-Button_Controller::Button_Controller(uint8_t _id, Adafruit_RGBLCDShield _lcd) {
-    lcd_ = _lcd;
+Button_Controller::Button_Controller(uint8_t _id) {
     id_ = _id;
 };
 
-bool Button_Controller::IsPressed() {
-
-    uint8_t _buttons = lcd_.readButtons();
+bool Button_Controller::IsPressed(uint8_t _buttons) {
 
     if(_buttons & id_) {
         if(!isPressed_) {
@@ -20,7 +17,6 @@ bool Button_Controller::IsPressed() {
         isPressed_ = false;
     }
         
-
     return isPressed_;
 
 };

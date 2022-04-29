@@ -7,9 +7,9 @@ UIM_Controller::UIM_Controller(String _startMsg) {
 };
 
 void UIM_Controller::Begin() {
-  lcd_.clear();
-  lcd_.begin(16, 2);
-  lcd_.print(startMessage_);
+  clear();
+  begin(16, 2);
+  print(startMessage_);
 }
 
 void UIM_Controller::HandleEvents() {
@@ -30,49 +30,43 @@ void UIM_Controller::HandleEvents() {
 
 void UIM_Controller::UpdateLCD() {
 
-  lcd_.setCursor(0, 1);
+  setCursor(0, 1);
   // print the number of seconds since reset:
-  lcd_.print(millis()/1000);
-  lcd_.print("     ");
+  print(millis()/1000);
+  print("     ");
 
 }
 
 void UIM_Controller::ReadButtons() {
 
-  if (upBtn.IsPressed()) {
-    ButtonUpPressed();
-  }
-  if (downBtn.IsPressed()) {
-    ButtonDownPressed();
-  }
-  if (leftBtn.IsPressed()) {
-    ButtonLeftPressed();
-  }
-  if (rightBtn.IsPressed()) {
-    ButtonRightPressed();
-  }
-  if (selectBtn.IsPressed()) {
-    ButtonSelectPressed();
+  uint8_t buttons = readButtons();
+
+  for(uint8_t i = 0; i < BTN_NUMBER; i++) {
+    if (Btn[i].IsPressed(buttons)) {
+      ButtonPressed(i);
+    }
   }
   
 }
 
-void UIM_Controller::ButtonUpPressed() {
-  lcd_.setBacklight(YELLOW);
-}
-
-void UIM_Controller::ButtonDownPressed() {
-  lcd_.setBacklight(RED);
-}
-
-void UIM_Controller::ButtonLeftPressed() {
-  lcd_.setBacklight(GREEN);
-}
-
-void UIM_Controller::ButtonRightPressed() {
-  lcd_.setBacklight(TEAL);
-}
-
-void UIM_Controller::ButtonSelectPressed() {
-  lcd_.setBacklight(VIOLET);
+void UIM_Controller::ButtonPressed(uint8_t button) {
+  switch(button) {
+    case BTN_UP:
+      setBacklight(YELLOW);
+      break;
+    case BTN_DOWN:
+      setBacklight(RED);
+      break;
+    case BTN_LEFT:
+      setBacklight(GREEN);
+      break;
+    case BTN_RIGHT:
+      setBacklight(TEAL);
+      break;
+    case BTN_SELECT:
+      setBacklight(VIOLET);
+      break;
+    default:
+      break;
+  }
 }

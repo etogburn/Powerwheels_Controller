@@ -16,10 +16,17 @@
 #define VIOLET 0x5
 #define WHITE 0x7
 
+#define BTN_NUMBER 5
+#define BTN_UP 0
+#define BTN_DOWN 1
+#define BTN_LEFT 2
+#define BTN_RIGHT 3
+#define BTN_SELECT 4
+
 #define TIME_LCD_UPDATE 20 //ms between display updates
 #define TIME_BUTTON_READ 10 //ms between button reads
 
-class UIM_Controller {
+class UIM_Controller : public Adafruit_RGBLCDShield {
 public:
   UIM_Controller(String _startMsg = "");
 
@@ -30,7 +37,7 @@ public:
   void HandleEvents();
   
 private:
-  Adafruit_RGBLCDShield lcd_;
+
   String startMessage_ = "";
 
   long lastLCDUpdate_ = 0;
@@ -40,18 +47,18 @@ private:
 
   void UpdateLCD();
   void ReadButtons();
-  void ButtonUpPressed();
-  void ButtonDownPressed();
-  void ButtonLeftPressed();
-  void ButtonRightPressed();
-  void ButtonSelectPressed();
-  
-  Button_Controller upBtn = Button_Controller(BUTTON_UP, lcd_);
-  Button_Controller downBtn = Button_Controller(BUTTON_DOWN, lcd_);
-  Button_Controller leftBtn = Button_Controller(BUTTON_LEFT, lcd_);
-  Button_Controller rightBtn = Button_Controller(BUTTON_RIGHT, lcd_);
-  Button_Controller selectBtn = Button_Controller(BUTTON_SELECT, lcd_);
 
+  void ButtonPressed(uint8_t);
+  
+  bool IsPressed(uint8_t, uint8_t);
+  
+  Button_Controller Btn[BTN_NUMBER] = {
+                                        Button_Controller(BUTTON_UP), 
+                                        Button_Controller(BUTTON_DOWN), 
+                                        Button_Controller(BUTTON_LEFT), 
+                                        Button_Controller(BUTTON_RIGHT), 
+                                        Button_Controller(BUTTON_SELECT)
+                                      };
 };
 
 #endif
