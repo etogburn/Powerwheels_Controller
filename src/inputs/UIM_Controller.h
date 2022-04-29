@@ -30,26 +30,28 @@ public:
   void HandleEvents();
   
 private:
-  Adafruit_RGBLCDShield* lcd_;
+  Adafruit_RGBLCDShield lcd_;
   String startMessage_ = "";
 
   long lastLCDUpdate_ = 0;
   long lastButtonRead_ = 0;
 
+  long val = 0;
+
   void UpdateLCD();
   void ReadButtons();
-  
-  Button_Controller upBtn = Button_Controller(lcd_,BUTTON_UP);
-  Button_Controller downBtn = Button_Controller(lcd_,BUTTON_DOWN);
-  Button_Controller leftBtn = Button_Controller(lcd_,BUTTON_LEFT);
-  Button_Controller rightBtn = Button_Controller(lcd_,BUTTON_RIGHT);
-  Button_Controller selectBtn = Button_Controller(lcd_,BUTTON_SELECT);
-
   void ButtonUpPressed();
   void ButtonDownPressed();
   void ButtonLeftPressed();
   void ButtonRightPressed();
   void ButtonSelectPressed();
+  
+  Button_Controller upBtn = Button_Controller(BUTTON_UP, lcd_);
+  Button_Controller downBtn = Button_Controller(BUTTON_DOWN, lcd_);
+  Button_Controller leftBtn = Button_Controller(BUTTON_LEFT, lcd_);
+  Button_Controller rightBtn = Button_Controller(BUTTON_RIGHT, lcd_);
+  Button_Controller selectBtn = Button_Controller(BUTTON_SELECT, lcd_);
+
 };
 
 #endif
