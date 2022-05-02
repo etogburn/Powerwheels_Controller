@@ -3,41 +3,58 @@
 Remote_Channel::Remote_Channel(uint8_t recievePin, long timeBetweenReads) {
     _recievePin = recievePin;
     _timeBetweenReads = timeBetweenReads;
+
     //Startup();
 }
 
 int16_t Remote_Channel::Read() {
-    CalculateAverage();
-    return _avgValue;
+    return _rawValue;
 }
 
-void Remote_Channel::Startup() {
+void Remote_Channel::Startup(void (*ISR_callback)(void)) {
+    if(digitalPinToInterrupt(_recievePin) <  0) {
+        _useInterrupt = false;
+    } 
+    else {
+        _useInterrupt = true;
+        noInterrupts();
+        attachInterrupt(digitalPinToInterrupt(_recievePin), ISR_callback, CHANGE);
+        interrupts();
+    }
+
     pinMode(_recievePin, INPUT);
+    
 }
 
 void Remote_Channel::Listen() {
-    ReadPulseWidth();
+    if(_useInterrupt) {
+        CalcPulseWidthInterrupt();
+    }
+    else {
+        CalcPulseWidthPulseIn();
+    }
 }
 
-void Remote_Channel::ReadPulseWidth() {
+void Remote_Channel::CalcPulseWidthPulseIn() {
     long now = millis();
 
     if(now > _lastTimeRead + _timeBetweenReads) {
-        uint8_t idxToRead = _lastReadIdx >= VALUES_TO_AVERAGE - 1 ? 0 : _lastReadIdx + 1;
-
-        _rawValues[idxToRead] = pulseIn(_recievePin, HIGH, PULSEIN_TIMEOUT);
-        _lastReadIdx = idxToRead;
+        _rawValue = pulseIn(_recievePin, HIGH, PULSEIN_TIMEOUT);
         _lastTimeRead = now;
     }
     
 }
 
-void Remote_Channel::CalculateAverage() {
-    int16_t runningAvg = 0;
 
-    for(uint8_t i = 0; i < VALUES_TO_AVERAGE; i++) {
-        runningAvg += _rawValues[i]/VALUES_TO_AVERAGE;
+void Remote_Channel::CalcPulseWidthInterrupt() {
+    if(digitalRead(_recievePin) == HIGH){
+        _interrupt_timer_start = micros();
     }
-    
-    _avgValue = runningAvg;
+    else
+    {
+        if(_interrupt_timer_start > 0){
+            _rawValue = ((volatile int)micros() - _interrupt_timer_start);
+            _interrupt_timer_start = 0;
+        }
+    }
 }

@@ -2,13 +2,14 @@
 #define MOTOR_h
 
 #include <Arduino.h>
-#define MOTOR_THREAD 5 //max value of about 30
+#include "../config.h"
+
 
 class Motor {
 
 public:
 
-    Motor(uint8_t fwdPin, uint8_t backPin);
+    Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin);
 
     void Start();
     void Stop();
@@ -22,7 +23,7 @@ public:
     void setDirection(bool);
     bool getDirection();
 
-    void setSpeed(uint8_t);
+    void setSpeed(int16_t);
     uint8_t getSpeed();
 
     void setAcceleration(uint16_t);
@@ -35,6 +36,7 @@ public:
 private:
     uint8_t _fwdPin = 0;
     uint8_t _backPin = 0;
+    uint8_t _enablePin = 0;
 
     bool _isRunning = false;
     bool _goForward = true;
@@ -53,8 +55,10 @@ private:
 
     long _lastSpeedChange = 0;
 
-    
+    void Enable();
+    void Disable();
     void ChangeToSpeed();
+    void JumpToSpeed();
     void WriteSpeed();
 
 };

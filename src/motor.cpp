@@ -1,26 +1,31 @@
 #include "motor.h"
 
-Motor::Motor(uint8_t fwdPin, uint8_t backPin) {
+Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin) {
     _fwdPin = fwdPin;
     _backPin = backPin;
+    _enablePin = enablePin;
 
     Startup();
+    Stop();
 }
 
 void Motor::Start() {
     _isRunning = true;
     _speed = 0;
+    Enable();
 }
 
 void Motor::Stop() {
     _isRunning = false;
     _targetSpeed = 0;
+    Disable();
 }
 
 void Motor::Run() {
     
     if(IsRunning()) _targetSpeed = _setSpeed;
-    if(_speed != _targetSpeed) ChangeToSpeed();
+    JumpToSpeed();
+    //if(_speed != _targetSpeed) ChangeToSpeed();
 }
 
 bool Motor::IsRunning() {
@@ -30,7 +35,10 @@ bool Motor::IsRunning() {
 void Motor::setDirection(bool dir) {
 
     if(_goForward != dir) {
-        _goForward = dir;
+        _goForward = dir;    
+    }
+
+    if((_setSpeed < 0 && _goForward) || _setSpeed > 0 && !_goForward) {
         _setSpeed *= -1;
     }
 
@@ -40,23 +48,25 @@ bool Motor::getDirection() {
     return _goForward;
 }
 
-void Motor::setSpeed(uint8_t speed) {
-    int8_t multiplier = 1;
-    if(!_goForward) multiplier = -1;
-
-    if(speed <= _maxSpeed && speed > 0) {
-        _setSpeed = speed * multiplier;
+void Motor::setSpeed(int16_t speed) {
+    if(speed <= _maxSpeed && speed >= _maxSpeed * -1) {
+        _setSpeed = speed;
     }
-    else if(speed > _maxSpeed) {
-        _setSpeed = _maxSpeed * multiplier;
+    else if(speed < 0 && speed >= _maxSpeed * -1) {
+        _setSpeed = speed;
+    }
+    else if(speed < _maxSpeed * -1) {
+        _setSpeed = _maxSpeed * -1;
     }
     else {
-        _setSpeed = 0;
+        _setSpeed = _maxSpeed;
     }
+    _setSpeed > 0 ? setDirection(true) : setDirection(false);
+
 }
 
 uint8_t Motor::getSpeed() {
-    return abs(_speed);
+    return _speed;
 }
 
 void Motor::setAcceleration(uint16_t accel) {
@@ -83,6 +93,7 @@ void Motor::setAccelDeccel(uint16_t val) {
 void Motor::Startup() {
     pinMode(_fwdPin, OUTPUT);
     pinMode(_backPin, OUTPUT);
+    pinMode(_enablePin, OUTPUT);
 }
 
 void Motor::ChangeToSpeed() {
@@ -101,12 +112,12 @@ void Motor::ChangeToSpeed() {
 
     uint16_t timeForChange = accelDeccel/255;
 
-    if(timeForChange < MOTOR_THREAD/2) {
-        stepSize *= 4;
-    } 
-    else if(timeForChange < MOTOR_THREAD) {
-        stepSize *= 2;
-    }
+    // if(timeForChange < MOTOR_THREAD/2) {
+    //     stepSize *= 4;
+    // } 
+    // else if(timeForChange < MOTOR_THREAD) {
+    //     stepSize *= 2;
+    // }
 
     if(now > _lastSpeedChange + timeForChange && _speed != _targetSpeed) {
         _speed += stepSize;
@@ -116,6 +127,11 @@ void Motor::ChangeToSpeed() {
         _lastSpeedChange = now;
     }
     
+}
+
+void Motor::JumpToSpeed() {
+    _speed = _targetSpeed;
+    WriteSpeed();
 }
 
 void Motor::WriteSpeed() {
@@ -131,3 +147,40 @@ void Motor::WriteSpeed() {
     
 }
 
+void Motor::Enable() {
+    digitalWrite(_enablePin, HIGH);
+}
+
+void Motor::Disable() {
+    digitalWrite(_enablePin, LOW);
+}
+
+/*
+Simple PID Control Algorithm.
+if (motor_start){
+     e_speed = set_speed - pv_speed;
+     pwm_pulse = e_speed*kp + e_speed_sum*ki + (e_speed - e_speed_pre)*kd;
+     e_speed_pre = e_speed;  //save last (previous) error
+     e_speed_sum += e_speed; //sum of error
+     if (e_speed_sum >4000) e_speed_sum = 4000;
+     if (e_speed_sum <-4000) e_speed_sum = -4000;
+   }
+   else{
+     e_speed = 0;
+     e_speed_pre = 0;
+     e_speed_sum = 0;
+     pwm_pulse = 0;
+   }
+  //update new speed
+   if (pwm_pulse <255 & pwm_pulse >0){
+     analogWrite(pin_pwm,pwm_pulse);  //set motor speed 
+   }
+   else{
+     if (pwm_pulse>255){
+       analogWrite(pin_pwm,255);
+     }
+     else{
+       analogWrite(pin_pwm,0);
+     }
+   } 
+   */

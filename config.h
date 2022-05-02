@@ -1,5 +1,6 @@
 //Configuration values all go here
 
+#define MOTOR_THREAD 50 //ms -- 16000000/64/65536 = 3.82 hz or ~250ms max. 250,000 hz or 4us min.
 
 
 //RC Transmitter/Reciever Settings
@@ -13,8 +14,8 @@
 #define THROTTLE_PIN 3
 #define ESTOP_PIN 4
 #define MODE_PIN 5
-#define CH5_PIN 6
-#define CH6_PIN 7
+#define CH5_PIN 18
+#define CH6_PIN 19
 
 #define STEER_IDX 0
 #define THROTTLE_IDX 1
@@ -27,3 +28,4 @@
 #define MIN_PULSE_VALUE 1000
 
 //End RC Reciever settings
+
