@@ -2,16 +2,18 @@
 #define MOTOR_h
 
 #include <Arduino.h>
+#define MOTOR_THREAD 5 //max value of about 30
 
 class Motor {
 
 public:
 
-    Motor(uint8_t fwdPin, uint8_t backPin, uint8_t speedPin);
+    Motor(uint8_t fwdPin, uint8_t backPin);
 
     void Start();
     void Stop();
     bool IsRunning();
+    void Startup();
 
     //@brief must be called on a recurring basis to ensure the motor values change appropriately.
     void Run();
@@ -31,7 +33,6 @@ public:
     void setAccelDeccel(uint16_t);
 
 private:
-    uint8_t _speedPin = 0;
     uint8_t _fwdPin = 0;
     uint8_t _backPin = 0;
 
@@ -47,19 +48,14 @@ private:
     //absolute maximum speed 
     int16_t _maxSpeed = 255;
 
-    uint16_t _acceleration = 3000; //ms from 0 to 100
+    uint16_t _acceleration = 1000; //ms from 0 to 100
     uint16_t _decceleration = _acceleration; //ms from 100 to 0
 
     long _lastSpeedChange = 0;
 
-    void Startup();
+    
     void ChangeToSpeed();
     void WriteSpeed();
-    void WriteForwards();
-    void WriteBackwards();
-    void TurnOffMotor();
-    void TurnOnMotor();
-    void ToggleDirection();
 
 };
 

@@ -30,10 +30,10 @@ void UIM_Controller::HandleEvents() {
 
 void UIM_Controller::UpdateLCD() {
 
-  setCursor(0, 1);
+  //setCursor(0, 1);
   // print the number of seconds since reset:
-  print(millis()/1000);
-  print("     ");
+  //print(millis()/1000);
+  //print("     ");
 
 }
 

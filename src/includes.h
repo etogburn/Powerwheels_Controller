@@ -1,6 +1,9 @@
 //Header files for all respective classes
 
-#include "inputs/Button_Controller.h"
-#include "inputs/UIM_Controller.h"
+#include "Button_Controller.h"
+#include "UIM_Controller.h"
 
-#include "drivers/motor.h"
+#include "motor.h"
+
+#include "Remote_Control.h"
+#include "Remote_Channel.h"

@@ -1,9 +1,8 @@
 #include "motor.h"
 
-Motor::Motor(uint8_t fwdPin, uint8_t backPin, uint8_t speedPin) {
+Motor::Motor(uint8_t fwdPin, uint8_t backPin) {
     _fwdPin = fwdPin;
     _backPin = backPin;
-    _speedPin = speedPin;
 
     Startup();
 }
@@ -11,7 +10,6 @@ Motor::Motor(uint8_t fwdPin, uint8_t backPin, uint8_t speedPin) {
 void Motor::Start() {
     _isRunning = true;
     _speed = 0;
-    TurnOnMotor();
 }
 
 void Motor::Stop() {
@@ -85,59 +83,51 @@ void Motor::setAccelDeccel(uint16_t val) {
 void Motor::Startup() {
     pinMode(_fwdPin, OUTPUT);
     pinMode(_backPin, OUTPUT);
-    pinMode(_speedPin, OUTPUT);
 }
 
 void Motor::ChangeToSpeed() {
 
     long now = millis();
     uint16_t accelDeccel = _decceleration;
-    int8_t stepSize = 0;
+    int8_t stepSize = 1;
 
     if(_targetSpeed > _speed) {
         if(_targetSpeed > 0) accelDeccel = _acceleration;
-        stepSize = 1;
+        stepSize *= 1;
     } else {
         if(_targetSpeed < 0) accelDeccel = _acceleration;
-        stepSize = -1;
+        stepSize *= -1;
     }
 
     uint16_t timeForChange = accelDeccel/255;
 
+    if(timeForChange < MOTOR_THREAD/2) {
+        stepSize *= 4;
+    } 
+    else if(timeForChange < MOTOR_THREAD) {
+        stepSize *= 2;
+    }
+
     if(now > _lastSpeedChange + timeForChange && _speed != _targetSpeed) {
-        if(_speed == 0) {
-            if(stepSize > 0) {
-                WriteForwards();
-            } else {
-                WriteBackwards();
-            }
-        }
         _speed += stepSize;
+        if(_speed > 255) _speed = 255;
+        else if(_speed < -255) _speed = -255;
         WriteSpeed();
+        _lastSpeedChange = now;
     }
     
 }
 
 void Motor::WriteSpeed() {
-    analogWrite(_speedPin, abs(_speed));
+
+    if(_speed >= 0) {
+        analogWrite(_fwdPin, _speed);
+        analogWrite(_backPin, 0);
+    }
+    else if(_speed <= 0) {
+        analogWrite(_backPin, _speed*-1);
+        analogWrite(_fwdPin, 0);
+    }  
+    
 }
 
-void Motor::WriteForwards() {
-    digitalWrite(_fwdPin, HIGH);
-    digitalWrite(_backPin, LOW);
-}
-
-void Motor::WriteBackwards() {
-    digitalWrite(_fwdPin, LOW);
-    digitalWrite(_backPin, HIGH);
-}
-
-void Motor::TurnOffMotor() {
-    digitalWrite(_fwdPin, LOW);
-    digitalWrite(_backPin, LOW);
-}
-
-void Motor::TurnOnMotor() {
-    if(_goForward) WriteForwards();
-    else WriteBackwards();
-}
