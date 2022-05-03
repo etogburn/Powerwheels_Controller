@@ -12,7 +12,7 @@ int16_t Remote_Channel::Read() {
 }
 
 void Remote_Channel::Startup(void (*ISR_callback)(void)) {
-    if(digitalPinToInterrupt(_recievePin) <  0) {
+    if(digitalPinToInterrupt(_recievePin) == NOT_AN_INTERRUPT) {
         _useInterrupt = false;
     } 
     else {
@@ -27,14 +27,16 @@ void Remote_Channel::Startup(void (*ISR_callback)(void)) {
 }
 
 void Remote_Channel::Listen() {
-    if(_useInterrupt) {
-        CalcPulseWidthInterrupt();
-    }
-    else {
+    if(!_useInterrupt) {
         CalcPulseWidthPulseIn();
     }
 }
 
+void Remote_Channel::ListenInterrupt() {
+    if(_useInterrupt) {
+        CalcPulseWidthInterrupt();
+    }
+}
 void Remote_Channel::CalcPulseWidthPulseIn() {
     long now = millis();
 

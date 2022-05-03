@@ -25,27 +25,11 @@ void Motor::Run() {
     
     if(IsRunning()) _targetSpeed = _setSpeed;
     JumpToSpeed();
-    //if(_speed != _targetSpeed) ChangeToSpeed();
+    //if(_speed != _targetSpeed) AccelToSpeed();
 }
 
 bool Motor::IsRunning() {
     return _isRunning;
-}
-
-void Motor::setDirection(bool dir) {
-
-    if(_goForward != dir) {
-        _goForward = dir;    
-    }
-
-    if((_setSpeed < 0 && _goForward) || _setSpeed > 0 && !_goForward) {
-        _setSpeed *= -1;
-    }
-
-}
-
-bool Motor::getDirection() {
-    return _goForward;
 }
 
 void Motor::setSpeed(int16_t speed) {
@@ -61,7 +45,6 @@ void Motor::setSpeed(int16_t speed) {
     else {
         _setSpeed = _maxSpeed;
     }
-    _setSpeed > 0 ? setDirection(true) : setDirection(false);
 
 }
 
@@ -70,24 +53,20 @@ int16_t Motor::getSpeed() {
 }
 
 void Motor::setAcceleration(uint16_t accel) {
-    _acceleration = accel;
+
+    if(accel < FASTEST_ACCEL) {
+        _acceleration = FASTEST_ACCEL;
+    }
+    if(accel > SLOWEST_ACCEL) {
+        _acceleration = SLOWEST_ACCEL;
+    }
+    else {
+        _acceleration = accel;
+    }
 }
 
 uint16_t Motor::getAcceleration() {
     return _acceleration;
-}
-
-void Motor::setDecceleration(uint16_t deccel) {
-    _decceleration = deccel;
-}
-
-uint16_t Motor::getDecceleration() {
-    return _decceleration;
-}
-
-void Motor::setAccelDeccel(uint16_t val) {
-    setAcceleration(val);
-    setDecceleration(val);
 }
 
 void Motor::Startup() {
@@ -96,37 +75,40 @@ void Motor::Startup() {
     pinMode(_enablePin, OUTPUT);
 }
 
-void Motor::ChangeToSpeed() {
+void Motor::setMaxSpeed(int16_t newMaxSpeed) {
+    if(newMaxSpeed > PWM_MAX || newMaxSpeed <  PWM_MAX * -1) {
+        _maxSpeed = PWM_MAX;
+    }
+    else {
+        _maxSpeed = newMaxSpeed;
+    }
 
-    long now = millis();
-    uint16_t accelDeccel = _decceleration;
-    int8_t stepSize = 1;
+    if(abs(_setSpeed) > _maxSpeed) {
+        _setSpeed >= 0 ? _setSpeed = _maxSpeed : _setSpeed = _maxSpeed * -1;
+    }
+}
+
+void Motor::AccelToSpeed() {
+
+    int16_t stepSize = MOTOR_THREAD/(_acceleration/PWM_MAX);
+    int16_t speedDifference = abs(_targetSpeed - _speed);
+
+    if(speedDifference < stepSize) {
+        stepSize = speedDifference;
+    }
 
     if(_targetSpeed > _speed) {
-        if(_targetSpeed > 0) accelDeccel = _acceleration;
         stepSize *= 1;
     } else {
-        if(_targetSpeed < 0) accelDeccel = _acceleration;
         stepSize *= -1;
     }
 
-    uint16_t timeForChange = accelDeccel/255;
-
-    // if(timeForChange < MOTOR_THREAD/2) {
-    //     stepSize *= 4;
-    // } 
-    // else if(timeForChange < MOTOR_THREAD) {
-    //     stepSize *= 2;
-    // }
-
-    if(now > _lastSpeedChange + timeForChange && _speed != _targetSpeed) {
+    if(_speed != _targetSpeed) {
         _speed += stepSize;
-        if(_speed > 255) _speed = 255;
-        else if(_speed < -255) _speed = -255;
+        if(_speed > PWM_MAX) _speed = PWM_MAX;
+        else if(_speed <  PWM_MAX) _speed =  -1 * PWM_MAX;
         WriteSpeed();
-        _lastSpeedChange = now;
     }
-    
 }
 
 void Motor::JumpToSpeed() {
@@ -172,12 +154,12 @@ if (motor_start){
      pwm_pulse = 0;
    }
   //update new speed
-   if (pwm_pulse <255 & pwm_pulse >0){
+   if (pwm_pulse  PWM_MAX & pwm_pulse >0){
      analogWrite(pin_pwm,pwm_pulse);  //set motor speed 
    }
    else{
-     if (pwm_pulse>255){
-       analogWrite(pin_pwm,255);
+     if (pwm_pulse PWM_MAX){
+       analogWrite(pin_pwm PWM_MAX);
      }
      else{
        analogWrite(pin_pwm,0);

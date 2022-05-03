@@ -11,6 +11,7 @@ public:
     Remote_Control(Remote_Channel channels[]);
     void Setup();
     int16_t Read(uint8_t);
+    void Listen();
 
 private:
     Remote_Channel* ch[NUM_OF_CHANNELS];

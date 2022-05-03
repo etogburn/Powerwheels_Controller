@@ -6,6 +6,7 @@
 #include <Adafruit_RGBLCDShield.h>
 #include <utility/Adafruit_MCP23017.h>
 #include "Button_Controller.h"
+#include "../config.h"
 
 //LCD Colors
 #define RED 0x1

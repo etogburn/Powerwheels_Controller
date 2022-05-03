@@ -2,6 +2,30 @@
  Name:		Powerwheels_Controller.ino
  Created:	4/27/2022 9:17:35 PM
  Author:	Ethan Ogburn
+
+ Todo:
+ speed motor Class or motor class?
+  - accelerate to speed
+  - choose between accelerate and jump to speed
+ Switch Class
+  - implement pedal switch and fwd/reverse
+ Car Class
+  - start
+  - brake
+  - drive
+  - setspeed
+Remote Class
+  - channel value mapping
+ position Motor class
+ eeprom saved settings
+settings adjustable remotely
+  - Top Speed adjustible
+  - stop car button
+  - Modes?
+  - second knob?
+hall effect pedal
+position based steering
+
 */
 
 #include "config.h"
@@ -20,8 +44,8 @@ struct DriveSettings {
   
 };
 
-Motor driveMotor = Motor(12, 8, 9);
-Motor steerMotor = Motor(13, 10, 11);
+Motor driveMotor = Motor(DRIVE_MOTOR_EN_PIN, DRIVE_MOTOR_FWD_PIN, DRIVE_MOTOR_REV_PIN);
+Motor steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN);
 
 Remote_Channel ch[NUM_OF_CHANNELS] = {
                             Remote_Channel(STEER_PIN),
@@ -34,22 +58,15 @@ Remote_Channel ch[NUM_OF_CHANNELS] = {
 
 Remote_Control remote = Remote_Control(ch);
 
-#define TIMER_PRESCALE 64
-#define TIMER_PRELOAD 65536 - 16000000/TIMER_PRESCALE/(1000/MOTOR_THREAD) // preload timer 65536-16MHz/8/100Hz. 20000 timer counts.
-#define TIMER_PRESCALER (1 << CS51) | (1 << CS50)  // 64 prescaler
-#if TIMER_PRELOAD >= 65536
-  #error Motor thread is too long.
-#elif TIMER_PRELOAD < 0
-  #error MotorThread is too short.
-#endif
+
 
 
 void setup() {
-
-  ch[0].Startup([]{ch[0].Listen();});
-  ch[1].Startup([]{ch[1].Listen();});
-  ch[4].Startup([]{ch[4].Listen();});
-  ch[5].Startup([]{ch[5].Listen();});
+ 
+  ch[STEER_IDX].Startup([]{ch[STEER_IDX].ListenInterrupt();});
+  ch[THROTTLE_IDX].Startup([]{ch[THROTTLE_IDX].ListenInterrupt();});
+  ch[CH5_IDX].Startup([]{ch[CH5_IDX].ListenInterrupt();});
+  ch[CH6_IDX].Startup([]{ch[CH6_IDX].ListenInterrupt();});
 
   driveMotor.Startup();
   steerMotor.Startup();
@@ -63,13 +80,10 @@ void setup() {
 // the loop function runs over and over again until power down or reset
 void loop() {
   
-  ch[2].Listen();
-  ch[3].Listen();
-
   uim.home();
-  uim.print(ch[0].Read());
+  uim.print(remote.Read(0));
   uim.print(" ");
-  uim.print(ch[1].Read());
+  uim.print(remote.Read(1));
   uim.print(" ");
   //uim.print(ch[4].Read()/10);
   uim.print(" ");
@@ -80,32 +94,32 @@ void loop() {
   uim.print(" ");
   uim.print(driveMotor.getSpeed());
   uim.print(" ");
-  uim.print(remote.Read(0));
+  uim.print(remote.Read(2));
   //uim.print(ch[2].Read()/10);
   uim.print(" ");
-  uim.print(remote.Read(1));
+  uim.print(remote.Read(3));
   //uim.print(ch[3].Read()/10);
   uim.print("             ");
 
-  int16_t ch2Val = ch[1].Read();
-  if(ch2Val <= 1525 && ch2Val >= 1475) {
+
+  if(remote.Read(THROTTLE_IDX) <= 5 && remote.Read(THROTTLE_IDX) >= -5) {
     driveMotor.Stop();
   }
   else {
     driveMotor.Start();
-    driveMotor.setSpeed(constrain(map(ch2Val, 950, 2050, -255, 255), -255, 255));
+    driveMotor.setSpeed(remote.Read(THROTTLE_IDX));
   }
 
-  int16_t ch1Val = ch[0].Read();
 
-  if(ch1Val <= 1525 && ch1Val >= 1475) {
+  if(remote.Read(STEER_IDX) <= 5 && remote.Read(STEER_IDX) >= -5) {
     steerMotor.Stop();
   }
   else {
     steerMotor.Start();
-    steerMotor.setSpeed(constrain(map(ch1Val, 950, 2050, -255, 255), -255, 255));
+    steerMotor.setSpeed(remote.Read(STEER_IDX));
   }
 
+  remote.Listen();
   uim.HandleEvents();
 }
 
@@ -115,7 +129,6 @@ void interruptTasks() {
   steerMotor.Run();
   
 }
-
 
 void setupTimer() {
 

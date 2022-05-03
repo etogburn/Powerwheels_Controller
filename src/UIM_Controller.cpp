@@ -10,6 +10,9 @@ void UIM_Controller::Begin() {
   clear();
   begin(16, 2);
   print(startMessage_);
+  setCursor(0,1);
+  print(VERSION);
+  
 }
 
 void UIM_Controller::HandleEvents() {

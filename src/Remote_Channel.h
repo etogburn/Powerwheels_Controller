@@ -2,21 +2,18 @@
 #define REMOTE_CHANNEL_h
 
 #include <Arduino.h>
-
-#define PULSEIN_TIMEOUT 25000
-#define CENTER_PULSE_VALUE 1500
+#include "../config.h"
 
 class Remote_Channel {
 
 public:
-
     Remote_Channel(uint8_t recievePin, long timeBetweenReads = 0);
     int16_t Read();
     void Listen();
     void Startup(void (*ISR_callback)(void) = NULL);
+    void ListenInterrupt();
 
 private:
-
     uint8_t _recievePin;
     bool _useInterrupt = false;
     volatile int16_t _rawValue = CENTER_PULSE_VALUE;
