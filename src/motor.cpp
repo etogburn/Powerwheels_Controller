@@ -65,7 +65,7 @@ void Motor::setSpeed(int16_t speed) {
 
 }
 
-uint8_t Motor::getSpeed() {
+int16_t Motor::getSpeed() {
     return _speed;
 }
 

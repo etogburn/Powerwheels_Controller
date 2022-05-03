@@ -55,7 +55,7 @@ void setup() {
   steerMotor.Startup();
 	uim.Begin();
   driveMotor.Stop();
-  steerMotor.Start();
+  steerMotor.Stop();
   setupTimer();
 
 }
@@ -67,43 +67,43 @@ void loop() {
   ch[3].Listen();
 
   uim.home();
-  uim.print(ch[0].Read()/10);
+  uim.print(ch[0].Read());
   uim.print(" ");
-  uim.print(ch[1].Read()/10);
+  uim.print(ch[1].Read());
   uim.print(" ");
-  uim.print(ch[4].Read()/10);
+  //uim.print(ch[4].Read()/10);
   uim.print(" ");
-  uim.print(ch[5].Read()/10);
+  //uim.print(ch[5].Read()/10);
   uim.print("              ");
   uim.setCursor(0,1);
-  uim.print(driveMotor.getSpeed());
-  uim.print(" ");
   uim.print(steerMotor.getSpeed());
   uim.print(" ");
-  uim.print(remote.Read(0)/10);
+  uim.print(driveMotor.getSpeed());
+  uim.print(" ");
+  uim.print(remote.Read(0));
   //uim.print(ch[2].Read()/10);
   uim.print(" ");
-  uim.print(remote.Read(1)/10);
+  uim.print(remote.Read(1));
   //uim.print(ch[3].Read()/10);
   uim.print("             ");
 
   int16_t ch2Val = ch[1].Read();
-  if(ch2Val >= 1525 || ch2Val <= 1475) {
+  if(ch2Val <= 1525 && ch2Val >= 1475) {
     driveMotor.Stop();
   }
   else {
     driveMotor.Start();
-    driveMotor.setSpeed(constrain(map(ch2Val, 1000, 2000, -255, 255), -255, 255));
+    driveMotor.setSpeed(constrain(map(ch2Val, 950, 2050, -255, 255), -255, 255));
   }
 
   int16_t ch1Val = ch[0].Read();
 
-  if(ch1Val >= 1525 || ch1Val <= 1475) {
+  if(ch1Val <= 1525 && ch1Val >= 1475) {
     steerMotor.Stop();
   }
   else {
     steerMotor.Start();
-    steerMotor.setSpeed(constrain(map(ch1Val, 1000, 2000, -255, 255), -255, 255));
+    steerMotor.setSpeed(constrain(map(ch1Val, 950, 2050, -255, 255), -255, 255));
   }
 
   uim.HandleEvents();

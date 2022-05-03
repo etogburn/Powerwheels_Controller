@@ -24,7 +24,7 @@ public:
     bool getDirection();
 
     void setSpeed(int16_t);
-    uint8_t getSpeed();
+    int16_t getSpeed();
 
     void setAcceleration(uint16_t);
     uint16_t getAcceleration();
