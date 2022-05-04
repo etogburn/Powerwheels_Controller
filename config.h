@@ -31,8 +31,8 @@
 #define THROTTLE_PIN 3
 #define ESTOP_PIN 4
 #define MODE_PIN 5
-#define CH5_PIN 18
-#define CH6_PIN 19
+#define CH5_PIN 19
+#define CH6_PIN 18
 
 #define STEER_IDX 0
 #define THROTTLE_IDX 1

@@ -51,7 +51,7 @@ Remote_Channel ch[NUM_OF_CHANNELS] = {
                             Remote_Channel(STEER_PIN),
                             Remote_Channel(THROTTLE_PIN),
                             Remote_Channel(ESTOP_PIN, CHANNEL_TIMEOUT_MED),
-                            Remote_Channel(MODE_PIN, CHANNEL_TIMEOUT_SLOW),
+                            Remote_Channel(MODE_PIN, CHANNEL_TIMEOUT_MED),
                             Remote_Channel(CH5_PIN),
                             Remote_Channel(CH6_PIN)
                             };
@@ -59,8 +59,9 @@ Remote_Channel ch[NUM_OF_CHANNELS] = {
 Remote_Control remote = Remote_Control(ch);
 
 
-
-
+long now = 0;
+long lastRun = 0;
+long calcTime = 0;
 void setup() {
  
   ch[STEER_IDX].Startup([]{ch[STEER_IDX].ListenInterrupt();});
@@ -85,19 +86,23 @@ void loop() {
   uim.print(" ");
   uim.print(remote.Read(1));
   uim.print(" ");
+  uim.print(" ");
+  //uim.print(remote.Read(2));
   //uim.print(ch[4].Read()/10);
   uim.print(" ");
   //uim.print(ch[5].Read()/10);
   uim.print("              ");
   uim.setCursor(0,1);
+  
   uim.print(steerMotor.getSpeed());
+  // uim.print(remote.Read(3));
   uim.print(" ");
-  uim.print(driveMotor.getSpeed());
+  uim.print(calcTime);
   uim.print(" ");
-  uim.print(remote.Read(2));
+  //uim.print(remote.Read(4));
   //uim.print(ch[2].Read()/10);
   uim.print(" ");
-  uim.print(remote.Read(3));
+  //uim.print(remote.Read(5));
   //uim.print(ch[3].Read()/10);
   uim.print("             ");
 

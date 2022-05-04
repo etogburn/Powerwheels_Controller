@@ -27,6 +27,8 @@ public:
 
     void setMaxSpeed(int16_t);
 
+    
+
 private:
     uint8_t _fwdPin = 0;
     uint8_t _backPin = 0;
@@ -43,7 +45,7 @@ private:
     //absolute maximum speed 
     int16_t _maxSpeed = PWM_MAX;
 
-    uint16_t _acceleration = 1000; //ms from 0 to 100 and 100 to 0
+    uint16_t _acceleration = 5000; //ms from 0 to 100 and 100 to 0
 
     long _lastSpeedChange = 0;
 

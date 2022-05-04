@@ -25,7 +25,7 @@ void Motor::Run() {
     
     if(IsRunning()) _targetSpeed = _setSpeed;
     JumpToSpeed();
-    //if(_speed != _targetSpeed) AccelToSpeed();
+    //AccelToSpeed();
 }
 
 bool Motor::IsRunning() {
@@ -92,23 +92,23 @@ void Motor::AccelToSpeed() {
 
     int16_t stepSize = MOTOR_THREAD/(_acceleration/PWM_MAX);
     int16_t speedDifference = abs(_targetSpeed - _speed);
-
+  
     if(speedDifference < stepSize) {
         stepSize = speedDifference;
     }
 
-    if(_targetSpeed > _speed) {
-        stepSize *= 1;
-    } else {
-        stepSize *= -1;
+    if(_targetSpeed >= _speed) {
+        _speed += stepSize;
+    } else if(_targetSpeed < _speed) {
+        _speed -= stepSize;
     }
 
-    if(_speed != _targetSpeed) {
-        _speed += stepSize;
+    //if(_speed != _targetSpeed) {
+       // _speed += stepSize;
         if(_speed > PWM_MAX) _speed = PWM_MAX;
-        else if(_speed <  PWM_MAX) _speed =  -1 * PWM_MAX;
+        else if(_speed <  PWM_MAX * -1) _speed =  -1 * PWM_MAX;
         WriteSpeed();
-    }
+    //}
 }
 
 void Motor::JumpToSpeed() {
