@@ -7,8 +7,6 @@
  speed motor Class or motor class?
   - accelerate to speed
   - choose between accelerate and jump to speed
- Switch Class
-  - implement pedal switch and fwd/reverse
  Car Class
   - start
   - brake
@@ -47,6 +45,10 @@ struct DriveSettings {
 Motor driveMotor = Motor(DRIVE_MOTOR_EN_PIN, DRIVE_MOTOR_FWD_PIN, DRIVE_MOTOR_REV_PIN);
 Motor steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN);
 
+Switch fwdSwitch = Switch(FWD_SWITCH, LOW);
+Switch revSwitch = Switch(REV_SWITCH, LOW);
+Switch hiLoSwitch = Switch(HILO_SWITCH, LOW);
+
 Remote_Channel ch[NUM_OF_CHANNELS] = {
                             Remote_Channel(STEER_PIN),
                             Remote_Channel(THROTTLE_PIN),
@@ -58,16 +60,24 @@ Remote_Channel ch[NUM_OF_CHANNELS] = {
 
 Remote_Control remote = Remote_Control(ch);
 
-
+//=========================
 long now = 0;
 long lastRun = 0;
 long calcTime = 0;
-void setup() {
- 
+//=========================
+
+void setupChannels() {
   ch[STEER_IDX].Startup([]{ch[STEER_IDX].ListenInterrupt();});
   ch[THROTTLE_IDX].Startup([]{ch[THROTTLE_IDX].ListenInterrupt();});
+  ch[ESTOP_IDX].Startup([]{ch[ESTOP_IDX].ListenInterrupt();});
+  ch[MODE_IDX].Startup([]{ch[MODE_IDX].ListenInterrupt();});
   ch[CH5_IDX].Startup([]{ch[CH5_IDX].ListenInterrupt();});
   ch[CH6_IDX].Startup([]{ch[CH6_IDX].ListenInterrupt();});
+}
+
+void setup() {
+ 
+  setupChannels();
 
   driveMotor.Startup();
   steerMotor.Startup();
@@ -97,8 +107,9 @@ void loop() {
   uim.print(steerMotor.getSpeed());
   // uim.print(remote.Read(3));
   uim.print(" ");
-  uim.print(calcTime);
+  uim.print(driveMotor.getSpeed());
   uim.print(" ");
+  uim.print(driveMotor.getAcceleration());
   //uim.print(remote.Read(4));
   //uim.print(ch[2].Read()/10);
   uim.print(" ");
@@ -106,6 +117,8 @@ void loop() {
   //uim.print(ch[3].Read()/10);
   uim.print("             ");
 
+  driveMotor.setAcceleration(map(remote.Read(CH5_IDX), -255, 255, FASTEST_ACCEL, SLOWEST_ACCEL));
+  steerMotor.setAcceleration(map(remote.Read(CH5_IDX), -255, 255, FASTEST_ACCEL, SLOWEST_ACCEL));
 
   if(remote.Read(THROTTLE_IDX) <= 5 && remote.Read(THROTTLE_IDX) >= -5) {
     driveMotor.Stop();
@@ -114,7 +127,6 @@ void loop() {
     driveMotor.Start();
     driveMotor.setSpeed(remote.Read(THROTTLE_IDX));
   }
-
 
   if(remote.Read(STEER_IDX) <= 5 && remote.Read(STEER_IDX) >= -5) {
     steerMotor.Stop();
@@ -126,13 +138,6 @@ void loop() {
 
   remote.Listen();
   uim.HandleEvents();
-}
-
-void interruptTasks() {
-  
-  driveMotor.Run();
-  steerMotor.Run();
-  
 }
 
 void setupTimer() {
@@ -149,6 +154,7 @@ void setupTimer() {
 
 ISR(TIMER5_OVF_vect) // interrupt service routine that wraps a user defined function supplied by attachInterrupt
 {
-  interruptTasks();
+  driveMotor.Run();
+  steerMotor.Run();
   TCNT5 = TIMER_PRELOAD;  // preload timer
 }

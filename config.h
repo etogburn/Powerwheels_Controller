@@ -2,10 +2,16 @@
 
 #define VERSION "0.0.0"
 
+//In car Switches
+#define FWD_SWITCH A2
+#define REV_SWITCH A1
+#define HILO_SWITCH A0
+
+
 //Motor Settings
 #define MOTOR_THREAD 50 //ms -- 16000000/64/65536 = 3.82 hz or ~250ms max. 250,000 hz or 4us min.
 
-#define FASTEST_ACCEL 1 //ms
+#define FASTEST_ACCEL MOTOR_THREAD //ms
 #define SLOWEST_ACCEL 5000 //ms
 
 #define DRIVE_MOTOR_EN_PIN 12
@@ -16,7 +22,7 @@
 #define STEER_MOTOR_FWD_PIN 10
 #define STEER_MOTOR_REV_PIN 11
 
-//RC Transmitter/Reciever Settings
+//RC Transmitter/Reciever Settingss
 #define CHANNEL_TIMEOUT_FAST 10
 #define CHANNEL_TIMEOUT_MED 200
 #define CHANNEL_TIMEOUT_SLOW 1000
@@ -40,7 +46,6 @@
 #define MODE_IDX 3
 #define CH5_IDX 4
 #define CH6_IDX 5
-
 
 //End RC Reciever settings
 

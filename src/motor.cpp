@@ -1,4 +1,4 @@
-#include "motor.h"
+#include "Motor.h"
 
 Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin) {
     _fwdPin = fwdPin;
@@ -11,7 +11,7 @@ Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin) {
 
 void Motor::Start() {
     _isRunning = true;
-    _speed = 0;
+    //_speed = 0;
     Enable();
 }
 
@@ -24,8 +24,8 @@ void Motor::Stop() {
 void Motor::Run() {
     
     if(IsRunning()) _targetSpeed = _setSpeed;
-    JumpToSpeed();
-    //AccelToSpeed();
+    //JumpToSpeed();
+    AccelToSpeed();
 }
 
 bool Motor::IsRunning() {
@@ -63,6 +63,8 @@ void Motor::setAcceleration(uint16_t accel) {
     else {
         _acceleration = accel;
     }
+
+     _accelStep = MOTOR_THREAD/(_acceleration/PWM_MAX);
 }
 
 uint16_t Motor::getAcceleration() {
@@ -89,20 +91,21 @@ void Motor::setMaxSpeed(int16_t newMaxSpeed) {
 }
 
 void Motor::AccelToSpeed() {
-
-    int16_t stepSize = MOTOR_THREAD/(_acceleration/PWM_MAX);
-    int16_t speedDifference = abs(_targetSpeed - _speed);
+    
+    volatile int16_t speedDifference = abs(_targetSpeed - _speed);
   
-    if(speedDifference < stepSize) {
-        stepSize = speedDifference;
+    if(speedDifference < _accelStep) {
+        _speed = _targetSpeed;
+    }
+    else {
+        if(_targetSpeed >= _speed) {
+        _speed += _accelStep;
+        } else if(_targetSpeed < _speed) {
+            _speed -= _accelStep;
+        }
     }
 
-    if(_targetSpeed >= _speed) {
-        _speed += stepSize;
-    } else if(_targetSpeed < _speed) {
-        _speed -= stepSize;
-    }
-
+    
     //if(_speed != _targetSpeed) {
        // _speed += stepSize;
         if(_speed > PWM_MAX) _speed = PWM_MAX;

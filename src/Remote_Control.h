@@ -15,6 +15,7 @@ public:
 
 private:
     Remote_Channel* ch[NUM_OF_CHANNELS];
+    uint8_t _channelToListen = 0;
 
 };
 

@@ -30,22 +30,25 @@ public:
     
 
 private:
+
+    long _lastThread = 0;
     uint8_t _fwdPin = 0;
     uint8_t _backPin = 0;
     uint8_t _enablePin = 0;
 
-    bool _isRunning = false;
+    volatile bool _isRunning = false;
 
     //Actual output of the motor
-    int16_t _speed = 0;
+    volatile int16_t _speed = 0;
     //maximum speed at full throttle at a given time.
     int16_t _setSpeed = 0;
 
-    int16_t _targetSpeed = 0;
+    volatile int16_t _targetSpeed = 0;
     //absolute maximum speed 
     int16_t _maxSpeed = PWM_MAX;
 
     uint16_t _acceleration = 5000; //ms from 0 to 100 and 100 to 0
+    volatile int16_t _accelStep =  MOTOR_THREAD/(_acceleration/PWM_MAX);
 
     long _lastSpeedChange = 0;
 
