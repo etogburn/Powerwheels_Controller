@@ -9,7 +9,7 @@ class Motor {
 
 public:
 
-    Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin);
+    Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, int16_t acceleration = ACCEL_DEFAULT);
 
     void Start();
     void Stop();
@@ -47,7 +47,7 @@ private:
     //absolute maximum speed 
     int16_t _maxSpeed = PWM_MAX;
 
-    uint16_t _acceleration = 5000; //ms from 0 to 100 and 100 to 0
+    uint16_t _acceleration = ACCEL_DEFAULT; //ms from 0 to 100 and 100 to 0
     volatile int16_t _accelStep =  MOTOR_THREAD/(_acceleration/PWM_MAX);
 
     long _lastSpeedChange = 0;

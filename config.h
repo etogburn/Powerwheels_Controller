@@ -13,6 +13,7 @@
 
 #define FASTEST_ACCEL MOTOR_THREAD //ms
 #define SLOWEST_ACCEL 5000 //ms
+#define ACCEL_DEFAULT 1000
 
 #define DRIVE_MOTOR_EN_PIN 12
 #define DRIVE_MOTOR_FWD_PIN 8
@@ -22,7 +23,7 @@
 #define STEER_MOTOR_FWD_PIN 10
 #define STEER_MOTOR_REV_PIN 11
 
-//RC Transmitter/Reciever Settingss
+//RC Transmitter/Reciever Settings
 #define CHANNEL_TIMEOUT_FAST 10
 #define CHANNEL_TIMEOUT_MED 200
 #define CHANNEL_TIMEOUT_SLOW 1000
@@ -39,6 +40,21 @@
 #define MODE_PIN 5
 #define CH5_PIN 19
 #define CH6_PIN 18
+
+#define CENTER_DEADBAND 10 //for throttle/steering counts on either side of the center point
+#define DEADBAND_MAX CENTER_PULSE_VALUE + CENTER_DEADBAND
+#define DEADBAND_MIN CENTER_PULSE_VALUE - CENTER_DEADBAND
+
+#define ESTOP_THRESHOLD 1500 //above this is active ~1800. ~1200 is inactive
+#define MODE_SWITCH_LOW_MID 1350
+#define MODE_SWITCH_MID_HIGH 1650
+
+#define MODE_HIGH 1
+#define MODE_MED 0
+#define MODE_LOW -1
+
+#define MIN_KNOB_VAL 0
+#define MAX_KNOB_VAL 1000
 
 #define STEER_IDX 0
 #define THROTTLE_IDX 1

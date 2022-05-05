@@ -1,9 +1,10 @@
 #include "Motor.h"
 
-Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin) {
+Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, int16_t acceleration) {
     _fwdPin = fwdPin;
     _backPin = backPin;
     _enablePin = enablePin;
+    setAcceleration(acceleration);
 
     Startup();
     Stop();
@@ -105,13 +106,9 @@ void Motor::AccelToSpeed() {
         }
     }
 
-    
-    //if(_speed != _targetSpeed) {
-       // _speed += stepSize;
-        if(_speed > PWM_MAX) _speed = PWM_MAX;
-        else if(_speed <  PWM_MAX * -1) _speed =  -1 * PWM_MAX;
-        WriteSpeed();
-    //}
+    if(_speed > PWM_MAX) _speed = PWM_MAX;
+    else if(_speed <  PWM_MAX * -1) _speed =  -1 * PWM_MAX;
+    WriteSpeed();
 }
 
 void Motor::JumpToSpeed() {

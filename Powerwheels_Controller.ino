@@ -42,8 +42,8 @@ struct DriveSettings {
   
 };
 
-Motor driveMotor = Motor(DRIVE_MOTOR_EN_PIN, DRIVE_MOTOR_FWD_PIN, DRIVE_MOTOR_REV_PIN);
-Motor steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN);
+Motor driveMotor = Motor(DRIVE_MOTOR_EN_PIN, DRIVE_MOTOR_FWD_PIN, DRIVE_MOTOR_REV_PIN, ACCEL_DEFAULT);
+Motor steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN, FASTEST_ACCEL);
 
 Switch fwdSwitch = Switch(FWD_SWITCH, LOW);
 Switch revSwitch = Switch(REV_SWITCH, LOW);
@@ -90,51 +90,62 @@ void setup() {
 
 // the loop function runs over and over again until power down or reset
 void loop() {
-  
-  uim.home();
-  uim.print(remote.Read(0));
-  uim.print(" ");
-  uim.print(remote.Read(1));
-  uim.print(" ");
-  uim.print(" ");
-  //uim.print(remote.Read(2));
-  //uim.print(ch[4].Read()/10);
-  uim.print(" ");
-  //uim.print(ch[5].Read()/10);
-  uim.print("              ");
-  uim.setCursor(0,1);
-  
-  uim.print(steerMotor.getSpeed());
-  // uim.print(remote.Read(3));
-  uim.print(" ");
-  uim.print(driveMotor.getSpeed());
-  uim.print(" ");
-  uim.print(driveMotor.getAcceleration());
-  //uim.print(remote.Read(4));
-  //uim.print(ch[2].Read()/10);
-  uim.print(" ");
-  //uim.print(remote.Read(5));
-  //uim.print(ch[3].Read()/10);
-  uim.print("             ");
+  now = millis();
 
-  driveMotor.setAcceleration(map(remote.Read(CH5_IDX), -255, 255, FASTEST_ACCEL, SLOWEST_ACCEL));
-  steerMotor.setAcceleration(map(remote.Read(CH5_IDX), -255, 255, FASTEST_ACCEL, SLOWEST_ACCEL));
+  if(now > lastRun + TIME_LCD_UPDATE) {
+    uim.home();
+    // uim.print("FWD:");
+    // uim.print(fwdSwitch.IsActive());
+    // uim.print(" ");
+    // uim.print("REV:");
+    // uim.print(revSwitch.IsActive());
+    // uim.print(" ");
+    // uim.setCursor(0,1);
+    // uim.print("HILO:");
+    // uim.print(hiLoSwitch.IsActive());
+    // uim.print(" ");
 
-  if(remote.Read(THROTTLE_IDX) <= 5 && remote.Read(THROTTLE_IDX) >= -5) {
-    driveMotor.Stop();
+    uim.print("TH:");
+    uim.print(remote.GetThrottle());
+    uim.print(" ST:");
+    uim.print(remote.GetSteering());
+    uim.print(" E:");
+    uim.print(remote.GetEStop());
+    uim.print("           ");
+    uim.setCursor(0,1);
+    uim.print("M:");
+    uim.print(remote.GetMode());
+    uim.print(" L:" );
+    uim.print(remote.GetLKnob());
+    uim.print(" R:");
+    uim.print(remote.GetRKnob());
+    uim.print("            ");
+  }
+
+  if(!remote.GetEStop()) {
+    driveMotor.setAcceleration(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
+
+    if(remote.GetThrottle() == 0) {
+      driveMotor.Stop();
+    }
+    else {
+      driveMotor.Start();
+      driveMotor.setSpeed(remote.GetThrottle());
+    }
+
+    if(remote.GetSteering() == 0) {
+      steerMotor.Stop();
+    }
+    else {
+      steerMotor.Start();
+      steerMotor.setSpeed(remote.GetSteering());
+    }
   }
   else {
-    driveMotor.Start();
-    driveMotor.setSpeed(remote.Read(THROTTLE_IDX));
-  }
-
-  if(remote.Read(STEER_IDX) <= 5 && remote.Read(STEER_IDX) >= -5) {
+    driveMotor.Stop();
     steerMotor.Stop();
   }
-  else {
-    steerMotor.Start();
-    steerMotor.setSpeed(remote.Read(STEER_IDX));
-  }
+  
 
   remote.Listen();
   uim.HandleEvents();

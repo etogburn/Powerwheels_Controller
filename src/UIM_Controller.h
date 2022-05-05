@@ -24,7 +24,7 @@
 #define BTN_RIGHT 3
 #define BTN_SELECT 4
 
-#define TIME_LCD_UPDATE 20 //ms between display updates
+#define TIME_LCD_UPDATE 100 //ms between display updates
 #define TIME_BUTTON_READ 10 //ms between button reads
 
 class UIM_Controller : public Adafruit_RGBLCDShield {
