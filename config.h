@@ -12,7 +12,7 @@
 #define MOTOR_THREAD 50 //ms -- 16000000/64/65536 = 3.82 hz or ~250ms max. 250,000 hz or 4us min.
 
 #define FASTEST_ACCEL 50//ms
-#define SLOWEST_ACCEL 5000 //ms
+#define SLOWEST_ACCEL 3000 //ms
 #define ACCEL_DEFAULT 1000
 
 #define DRIVE_MOTOR_EN_PIN 12
@@ -41,7 +41,7 @@
 #define CH5_PIN 19
 #define CH6_PIN 18
 
-#define CENTER_DEADBAND 10 //for throttle/steering counts on either side of the center point
+#define CENTER_DEADBAND 15 //for throttle/steering counts on either side of the center point
 #define DEADBAND_MAX CENTER_PULSE_VALUE + CENTER_DEADBAND
 #define DEADBAND_MIN CENTER_PULSE_VALUE - CENTER_DEADBAND
 

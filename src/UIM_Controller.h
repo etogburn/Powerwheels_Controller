@@ -27,6 +27,8 @@
 #define TIME_LCD_UPDATE 100 //ms between display updates
 #define TIME_BUTTON_READ 10 //ms between button reads
 
+#define NUM_OF_SCREENS 2 //0 based index
+
 class UIM_Controller : public Adafruit_RGBLCDShield {
 public:
   UIM_Controller(String _startMsg = "");
@@ -34,19 +36,26 @@ public:
   // @brief setups and starts the display with the welcome message.
   void Begin();
 
-  // @brief Updates the display in the main loop.
+  // @brief Screen 1 - FWD, REV, HILO
   void HandleEvents();
   
 private:
 
-  String startMessage_ = "";
+  String _startMessage = "";
 
-  long lastLCDUpdate_ = 0;
-  long lastButtonRead_ = 0;
+  long _lastLCDUpdate = 0;
+  long _lastButtonRead = 0;
+
+  uint8_t _currentScreen = 0;
+
+  void SetScreen(uint8_t);
+  void SetScreenWelcome();
+  void SetScreenPedals(bool inputs[3]);
+  void SetScreenRemote();
 
   long val = 0;
 
-  void UpdateLCD();
+
   void ReadButtons();
 
   void ButtonPressed(uint8_t);

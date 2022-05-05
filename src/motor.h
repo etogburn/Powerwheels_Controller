@@ -26,7 +26,7 @@ public:
     uint16_t getAcceleration();
 
     void setMaxSpeed(int16_t);
-
+    void EStop();
     
 
 private:

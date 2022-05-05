@@ -1,43 +1,56 @@
 #include "UIM_Controller.h"
 
-UIM_Controller::UIM_Controller(String _startMsg) {
+UIM_Controller::UIM_Controller(String startMsg) {
 
-  startMessage_ = _startMsg;
+  _startMessage = startMsg;
 
 };
 
 void UIM_Controller::Begin() {
   clear();
   begin(16, 2);
-  print(startMessage_);
-  setCursor(0,1);
-  print(VERSION);
+  
   
 }
 
 void UIM_Controller::HandleEvents() {
-
+  //bool screen1[3];
   long now = millis();
 
-  if(now > lastLCDUpdate_ + TIME_LCD_UPDATE) {
-    UpdateLCD();
-    lastLCDUpdate_ = now;
-  }
+  // if(now > _lastLCDUpdate + TIME_LCD_UPDATE) {
+  //   switch(_currentScreen) {
+  //   case 0:
+  //     SetScreenWelcome();
+  //     break;
+  //   case 1:
+  //     SetScreenPedals(screen1);
+  //     break;
+  //   case 2:
+  //     break;
+  //   }
+  //   SetScreen(_currentScreen);
+  //   _lastLCDUpdate = now;
+  // }
   
-  if(now > lastButtonRead_ + TIME_BUTTON_READ) {
+  if(now > _lastButtonRead + TIME_BUTTON_READ) {
     ReadButtons();
-    lastButtonRead_ = now;
+    _lastButtonRead = now;
   }
   
 }
 
-void UIM_Controller::UpdateLCD() {
 
-  //setCursor(0, 1);
-  // print the number of seconds since reset:
-  //print(millis()/1000);
-  //print("     ");
 
+void UIM_Controller::SetScreen(uint8_t screen) {
+
+  if(screen >= 0 && screen < NUM_OF_SCREENS) {
+    _currentScreen = screen;
+  } else if (screen >= NUM_OF_SCREENS) {
+    _currentScreen = 0;
+  } else {
+    _currentScreen = NUM_OF_SCREENS - 1;
+  }
+  
 }
 
 void UIM_Controller::ReadButtons() {
@@ -61,10 +74,12 @@ void UIM_Controller::ButtonPressed(uint8_t button) {
       setBacklight(RED);
       break;
     case BTN_LEFT:
-      setBacklight(GREEN);
+      //setBacklight(GREEN);
+      SetScreen(_currentScreen--);
       break;
     case BTN_RIGHT:
-      setBacklight(TEAL);
+      //setBacklight(TEAL);
+      SetScreen(_currentScreen++);
       break;
     case BTN_SELECT:
       setBacklight(VIOLET);
@@ -72,4 +87,42 @@ void UIM_Controller::ButtonPressed(uint8_t button) {
     default:
       break;
   }
+}
+
+void UIM_Controller::SetScreenWelcome() {
+  setCursor(0,0);
+  print(_startMessage);
+  setCursor(0,1);
+  print(VERSION);
+}
+
+void UIM_Controller::SetScreenPedals(bool inputs[3]) {
+  print("FWD:");
+  print(inputs[0]);
+  print(" ");
+  print("REV:");
+  print(inputs[1]);
+  print(" ");
+  setCursor(0,1);
+  print("HILO:");
+  print(inputs[2]);
+  print("  ");
+}
+
+void UIM_Controller::SetScreenRemote() {
+  print("TH:");
+  // print(remote.GetThrottle());
+  print(" ST:");
+  // print(remote.GetSteering());
+  print(" E:");
+  // print(remote.GetEStop());
+  print("           ");
+  setCursor(0,1);
+  // print("M:");
+  // print(remote.GetMode());
+  print(" L:" );
+  // print(remote.GetLKnob());
+  print(" R:");
+  // print(remote.GetRKnob());
+  print("            ");
 }

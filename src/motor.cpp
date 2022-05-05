@@ -25,7 +25,7 @@ void Motor::Stop() {
 void Motor::Run() {
     
     if(IsRunning()) _targetSpeed = _setSpeed;
-    if(_acceleration < 100) JumpToSpeed();
+    //if(_acceleration < 100) JumpToSpeed();
     AccelToSpeed();
 }
 
@@ -136,6 +136,13 @@ void Motor::Enable() {
 
 void Motor::Disable() {
     digitalWrite(_enablePin, LOW);
+}
+
+void Motor::EStop() {
+    _speed = 0; 
+    _targetSpeed = 0;
+    JumpToSpeed();
+    _isRunning = false;
 }
 
 /*

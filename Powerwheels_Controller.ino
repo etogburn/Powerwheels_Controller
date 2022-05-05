@@ -42,12 +42,7 @@ struct DriveSettings {
   
 };
 
-Motor driveMotor = Motor(DRIVE_MOTOR_EN_PIN, DRIVE_MOTOR_FWD_PIN, DRIVE_MOTOR_REV_PIN, ACCEL_DEFAULT);
-Motor steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN, FASTEST_ACCEL);
-
-Switch fwdSwitch = Switch(FWD_SWITCH, LOW);
-Switch revSwitch = Switch(REV_SWITCH, LOW);
-Switch hiLoSwitch = Switch(HILO_SWITCH, LOW);
+Car car = Car();
 
 Remote_Channel ch[NUM_OF_CHANNELS] = {
                             Remote_Channel(STEER_PIN),
@@ -79,11 +74,8 @@ void setup() {
  
   setupChannels();
 
-  driveMotor.Startup();
-  steerMotor.Startup();
 	uim.Begin();
-  driveMotor.Stop();
-  steerMotor.Stop();
+
   setupTimer();
 
 }
@@ -122,30 +114,14 @@ void loop() {
     uim.print("            ");
   }
 
-  if(!remote.GetEStop()) {
-    driveMotor.setAcceleration(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
+  car.SetEStop(remote.GetEStop());
 
-    if(remote.GetThrottle() == 0) {
-      driveMotor.Stop();
-    }
-    else {
-      driveMotor.Start();
-      driveMotor.setSpeed(remote.GetThrottle());
-    }
+  car.SetAcceleration(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
+  car.SetMaxSpeed(map(remote.GetRKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
 
-    if(remote.GetSteering() == 0) {
-      steerMotor.Stop();
-    }
-    else {
-      steerMotor.Start();
-      steerMotor.setSpeed(remote.GetSteering());
-    }
-  }
-  else {
-    driveMotor.Stop();
-    steerMotor.Stop();
-  }
-  
+  car.SetThrottle(remote.GetThrottle());
+
+  car.SetSteer(remote.GetSteering());
 
   remote.Listen();
   uim.HandleEvents();
@@ -165,7 +141,6 @@ void setupTimer() {
 
 ISR(TIMER5_OVF_vect) // interrupt service routine that wraps a user defined function supplied by attachInterrupt
 {
-  driveMotor.Run();
-  steerMotor.Run();
+  car.Run();
   TCNT5 = TIMER_PRELOAD;  // preload timer
 }
