@@ -57,10 +57,6 @@ void Car::Brake() {
     _driveMotor.EStop();
 }
 
-void Car::Start() {
-
-}
-
 bool Car::RemoteOverride(int16_t input) {
     if(input != 0) {
         return true;

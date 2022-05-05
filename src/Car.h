@@ -8,8 +8,6 @@ class Car {
 public:
     Car();
     void Run();
-    void Brake();
-    void Start();
 
     void SetSteer(int16_t);
     void SetThrottle(int16_t);
@@ -18,6 +16,7 @@ public:
     void SetEStop(bool);
     
 private:
+    void Brake();
     void Stop();
     void Go();
     int8_t GetPedal();
