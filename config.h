@@ -11,7 +11,7 @@
 //Motor Settings
 #define MOTOR_THREAD 50 //ms -- 16000000/64/65536 = 3.82 hz or ~250ms max. 250,000 hz or 4us min.
 
-#define FASTEST_ACCEL MOTOR_THREAD //ms
+#define FASTEST_ACCEL 50//ms
 #define SLOWEST_ACCEL 5000 //ms
 #define ACCEL_DEFAULT 1000
 

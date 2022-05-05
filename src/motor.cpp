@@ -25,7 +25,7 @@ void Motor::Stop() {
 void Motor::Run() {
     
     if(IsRunning()) _targetSpeed = _setSpeed;
-    //JumpToSpeed();
+    if(_acceleration < 100) JumpToSpeed();
     AccelToSpeed();
 }
 
@@ -96,7 +96,7 @@ void Motor::AccelToSpeed() {
     volatile int16_t speedDifference = abs(_targetSpeed - _speed);
   
     if(speedDifference < _accelStep) {
-        _speed = _targetSpeed;
+        JumpToSpeed();
     }
     else {
         if(_targetSpeed >= _speed) {
@@ -104,11 +104,12 @@ void Motor::AccelToSpeed() {
         } else if(_targetSpeed < _speed) {
             _speed -= _accelStep;
         }
+        if(_speed > PWM_MAX) _speed = PWM_MAX;
+        else if(_speed <  PWM_MAX * -1) _speed =  -1 * PWM_MAX;
+        WriteSpeed();
     }
 
-    if(_speed > PWM_MAX) _speed = PWM_MAX;
-    else if(_speed <  PWM_MAX * -1) _speed =  -1 * PWM_MAX;
-    WriteSpeed();
+    
 }
 
 void Motor::JumpToSpeed() {
