@@ -25,10 +25,10 @@ private:
     bool _estop = false;
     bool _lastEStop = false;
     
-    int16_t _external_throttle = 0;
-    int16_t _external_steering = 0;
+    volatile int16_t _external_throttle = 0;
+    volatile int16_t _external_steering = 0;
 
-    uint16_t _maxSpeed = PWM_MAX;
+    volatile int16_t _maxSpeed = PWM_MAX;
 
     Motor _driveMotor = Motor(DRIVE_MOTOR_EN_PIN, DRIVE_MOTOR_FWD_PIN, DRIVE_MOTOR_REV_PIN, ACCEL_DEFAULT);
     Motor _steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN, FASTEST_ACCEL);

@@ -47,8 +47,8 @@ private:
     //absolute maximum speed 
     int16_t _maxSpeed = PWM_MAX;
 
-    uint16_t _acceleration = ACCEL_DEFAULT; //ms from 0 to 100 and 100 to 0
-    volatile int16_t _accelStep =  MOTOR_THREAD/(_acceleration/PWM_MAX);
+    int16_t _acceleration = ACCEL_DEFAULT; //ms from 0 to 100 and 100 to 0
+    volatile int16_t _accelStep =  MOTOR_THREAD * PWM_MAX / _acceleration;
 
     long _lastSpeedChange = 0;
 

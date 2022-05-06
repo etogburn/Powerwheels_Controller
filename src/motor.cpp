@@ -23,9 +23,8 @@ void Motor::Stop() {
 }
 
 void Motor::Run() {
-    
+
     if(IsRunning()) _targetSpeed = _setSpeed;
-    //if(_acceleration < 100) JumpToSpeed();
     AccelToSpeed();
 }
 
@@ -65,7 +64,7 @@ void Motor::setAcceleration(uint16_t accel) {
         _acceleration = accel;
     }
 
-     _accelStep = MOTOR_THREAD/(_acceleration/PWM_MAX);
+     _accelStep = MOTOR_THREAD * PWM_MAX/_acceleration;
 }
 
 uint16_t Motor::getAcceleration() {
@@ -94,9 +93,9 @@ void Motor::setMaxSpeed(int16_t newMaxSpeed) {
 void Motor::AccelToSpeed() {
     
     volatile int16_t speedDifference = abs(_targetSpeed - _speed);
-  
-    if(speedDifference < _accelStep) {
-        JumpToSpeed();
+
+    if(speedDifference < _accelStep ) {
+        _speed = _targetSpeed;
     }
     else {
         if(_targetSpeed >= _speed) {
@@ -104,10 +103,9 @@ void Motor::AccelToSpeed() {
         } else if(_targetSpeed < _speed) {
             _speed -= _accelStep;
         }
-        if(_speed > PWM_MAX) _speed = PWM_MAX;
-        else if(_speed <  PWM_MAX * -1) _speed =  -1 * PWM_MAX;
-        WriteSpeed();
+        
     }
+    WriteSpeed();
 
     
 }
@@ -118,7 +116,8 @@ void Motor::JumpToSpeed() {
 }
 
 void Motor::WriteSpeed() {
-
+    if(_speed > PWM_MAX) _speed = PWM_MAX;
+    else if(_speed <  PWM_MAX * -1) _speed =  -1 * PWM_MAX;
     if(_speed >= 0) {
         analogWrite(_fwdPin, _speed);
         analogWrite(_backPin, 0);

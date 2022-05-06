@@ -1,10 +1,11 @@
 //Configuration values all go here
+//#define DEBUG
 
 #define VERSION "0.0.0"
 
 //In car Switches
-#define FWD_SWITCH A2
-#define REV_SWITCH A1
+#define FWD_SWITCH A1
+#define REV_SWITCH A2
 #define HILO_SWITCH A0
 
 
@@ -25,7 +26,7 @@
 
 //RC Transmitter/Reciever Settings
 #define CHANNEL_TIMEOUT_FAST 10
-#define CHANNEL_TIMEOUT_MED 200
+#define CHANNEL_TIMEOUT_MED 100
 #define CHANNEL_TIMEOUT_SLOW 1000
 #define NUM_OF_CHANNELS 6
 
@@ -41,7 +42,7 @@
 #define CH5_PIN 19
 #define CH6_PIN 18
 
-#define CENTER_DEADBAND 15 //for throttle/steering counts on either side of the center point
+#define CENTER_DEADBAND 40 //for throttle/steering counts on either side of the center point
 #define DEADBAND_MAX CENTER_PULSE_VALUE + CENTER_DEADBAND
 #define DEADBAND_MIN CENTER_PULSE_VALUE - CENTER_DEADBAND
 

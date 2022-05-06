@@ -8,29 +8,31 @@ void Car::Run() {
 
 
     if(_estop) {
-        if(_estop != _lastEStop) {
+        //if(_estop != _lastEStop) {
             Brake();
-            _lastEStop = _estop;
-        } 
+           // _lastEStop = _estop;
+        //} 
     } 
     else {
+
         if(GetPedal() != 0) {
             Go();
         } else {
             Stop();
         }
-    }
 
-    if(RemoteOverride(_external_steering)) {
-        _steerMotor.Start();
-        _steerMotor.setSpeed(_external_steering);
-    } else {
-        _steerMotor.Stop();
-    }
+        if(RemoteOverride(_external_steering)) {
+            _steerMotor.Start();
+            _steerMotor.setSpeed(_external_steering);
+        } else {
+            _steerMotor.Stop();
+            _external_steering = 0;
+        }
 
-    if(RemoteOverride(_external_throttle)) {
-        _driveMotor.Start();
-        _driveMotor.setSpeed(_external_throttle);
+        if(RemoteOverride(_external_throttle)) {
+            _driveMotor.Start();
+            _driveMotor.setSpeed(_external_throttle);
+        }
     }
 
     _driveMotor.Run();

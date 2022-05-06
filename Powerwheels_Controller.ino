@@ -71,7 +71,7 @@ void setupChannels() {
 }
 
 void setup() {
- 
+
   setupChannels();
 
 	uim.Begin();
@@ -110,7 +110,7 @@ void loop() {
     uim.print(" L:" );
     uim.print(remote.GetLKnob());
     uim.print(" R:");
-    uim.print(remote.GetRKnob());
+    uim.print(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
     uim.print("            ");
   }
 
@@ -141,6 +141,8 @@ void setupTimer() {
 
 ISR(TIMER5_OVF_vect) // interrupt service routine that wraps a user defined function supplied by attachInterrupt
 {
+  noInterrupts();
   car.Run();
   TCNT5 = TIMER_PRELOAD;  // preload timer
+  interrupts();
 }
