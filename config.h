@@ -1,7 +1,6 @@
 //Configuration values all go here
-//#define DEBUG
 
-#define VERSION "0.0.0"
+#define VERSION "1.0.0"
 
 //In car Switches
 #define FWD_SWITCH A1
@@ -16,13 +15,17 @@
 #define SLOWEST_ACCEL 3000 //ms
 #define ACCEL_DEFAULT 1000
 
-#define DRIVE_MOTOR_EN_PIN 12
-#define DRIVE_MOTOR_FWD_PIN 8
-#define DRIVE_MOTOR_REV_PIN 9
+#define DRIVE_MOTOR_R_EN_PIN 10
+#define DRIVE_MOTOR_R_FWD_PIN 8
+#define DRIVE_MOTOR_R_REV_PIN 9
 
-#define STEER_MOTOR_EN_PIN 13
-#define STEER_MOTOR_FWD_PIN 10
-#define STEER_MOTOR_REV_PIN 11
+#define DRIVE_MOTOR_L_EN_PIN 13
+#define DRIVE_MOTOR_L_FWD_PIN 12
+#define DRIVE_MOTOR_L_REV_PIN 11
+
+#define STEER_MOTOR_EN_PIN 7
+#define STEER_MOTOR_FWD_PIN 6
+#define STEER_MOTOR_REV_PIN 5
 
 //RC Transmitter/Reciever Settings
 #define CHANNEL_TIMEOUT_FAST 10
@@ -37,8 +40,8 @@
 
 #define STEER_PIN 2
 #define THROTTLE_PIN 3
-#define ESTOP_PIN 4
-#define MODE_PIN 5
+#define ESTOP_PIN 17
+#define MODE_PIN 16
 #define CH5_PIN 19
 #define CH6_PIN 18
 

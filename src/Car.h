@@ -14,6 +14,7 @@ public:
     void SetAcceleration(int16_t);
     void SetMaxSpeed(int16_t);
     void SetEStop(bool);
+    void SetMode(int8_t);
     
 private:
     void Brake();
@@ -24,13 +25,15 @@ private:
 
     bool _estop = false;
     bool _lastEStop = false;
+    int8_t _mode = 0;
     
     volatile int16_t _external_throttle = 0;
     volatile int16_t _external_steering = 0;
 
     volatile int16_t _maxSpeed = PWM_MAX;
 
-    Motor _driveMotor = Motor(DRIVE_MOTOR_EN_PIN, DRIVE_MOTOR_FWD_PIN, DRIVE_MOTOR_REV_PIN, ACCEL_DEFAULT);
+    Motor _driveMotorR = Motor(DRIVE_MOTOR_R_EN_PIN, DRIVE_MOTOR_R_FWD_PIN, DRIVE_MOTOR_R_REV_PIN, ACCEL_DEFAULT);
+    Motor _driveMotorL = Motor(DRIVE_MOTOR_L_EN_PIN, DRIVE_MOTOR_L_FWD_PIN, DRIVE_MOTOR_L_REV_PIN, ACCEL_DEFAULT);
     Motor _steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN, FASTEST_ACCEL);
 
     Switch _fwdSwitch = Switch(FWD_SWITCH, LOW);

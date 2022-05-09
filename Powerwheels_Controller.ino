@@ -3,22 +3,10 @@
  Created:	4/27/2022 9:17:35 PM
  Author:	Ethan Ogburn
 
- Todo:
- speed motor Class or motor class?
-  - accelerate to speed
-  - choose between accelerate and jump to speed
- Car Class
-  - start
-  - brake
-  - drive
-  - setspeed
-Remote Class
-  - channel value mapping
- position Motor class
- eeprom saved settings
+Todo:
+position Motor class
+eeprom saved settings
 settings adjustable remotely
-  - Top Speed adjustible
-  - stop car button
   - Modes?
   - second knob?
 hall effect pedal
@@ -30,17 +18,6 @@ position based steering
 #include "src/includes.h"
 
 UIM_Controller uim ("Powerwheels");
-
-//parameters that define how the vehicle works and that are saved to eeprom
-struct Settings {
-  int accel = 0;
-  int deccel = 0;
-};
-
-//parameters associated with driving that are dynamic and constantly changing.
-struct DriveSettings {
-  
-};
 
 Car car = Car();
 
@@ -55,30 +32,16 @@ Remote_Channel ch[NUM_OF_CHANNELS] = {
 
 Remote_Control remote = Remote_Control(ch);
 
-//=========================
-long now = 0;
-long lastRun = 0;
-long calcTime = 0;
-//=========================
-
-void setupChannels() {
-  ch[STEER_IDX].Startup([]{ch[STEER_IDX].ListenInterrupt();});
-  ch[THROTTLE_IDX].Startup([]{ch[THROTTLE_IDX].ListenInterrupt();});
-  ch[ESTOP_IDX].Startup([]{ch[ESTOP_IDX].ListenInterrupt();});
-  ch[MODE_IDX].Startup([]{ch[MODE_IDX].ListenInterrupt();});
-  ch[CH5_IDX].Startup([]{ch[CH5_IDX].ListenInterrupt();});
-  ch[CH6_IDX].Startup([]{ch[CH6_IDX].ListenInterrupt();});
-}
-
 void setup() {
 
   setupChannels();
-
 	uim.Begin();
-
   setupTimer();
 
 }
+
+long now = 0;
+long lastRun = 0;
 
 // the loop function runs over and over again until power down or reset
 void loop() {
@@ -110,12 +73,13 @@ void loop() {
     uim.print(" L:" );
     uim.print(remote.GetLKnob());
     uim.print(" R:");
-    uim.print(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
+    uim.print(remote.GetRKnob());
     uim.print("            ");
   }
 
   car.SetEStop(remote.GetEStop());
-
+  car.SetMode(remote.GetMode());
+  
   car.SetAcceleration(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
   car.SetMaxSpeed(map(remote.GetRKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
 
@@ -125,6 +89,15 @@ void loop() {
 
   remote.Listen();
   uim.HandleEvents();
+}
+
+void setupChannels() {
+  ch[STEER_IDX].Startup([]{ch[STEER_IDX].ListenInterrupt();});
+  ch[THROTTLE_IDX].Startup([]{ch[THROTTLE_IDX].ListenInterrupt();});
+  ch[ESTOP_IDX].Startup([]{ch[ESTOP_IDX].ListenInterrupt();});
+  ch[MODE_IDX].Startup([]{ch[MODE_IDX].ListenInterrupt();});
+  ch[CH5_IDX].Startup([]{ch[CH5_IDX].ListenInterrupt();});
+  ch[CH6_IDX].Startup([]{ch[CH6_IDX].ListenInterrupt();});
 }
 
 void setupTimer() {

@@ -8,10 +8,7 @@ void Car::Run() {
 
 
     if(_estop) {
-        //if(_estop != _lastEStop) {
-            Brake();
-           // _lastEStop = _estop;
-        //} 
+        Brake();
     } 
     else {
 
@@ -30,12 +27,15 @@ void Car::Run() {
         }
 
         if(RemoteOverride(_external_throttle)) {
-            _driveMotor.Start();
-            _driveMotor.setSpeed(_external_throttle);
+            _driveMotorR.Start();
+            _driveMotorL.Start();
+            _driveMotorR.setSpeed(_external_throttle);
+            _driveMotorL.setSpeed(_external_throttle);
         }
     }
 
-    _driveMotor.Run();
+    _driveMotorL.Run();
+    _driveMotorR.Run();
     _steerMotor.Run();
     
 }
@@ -51,12 +51,15 @@ int8_t Car::GetPedal() {
 }
 
 void Car::Go() {
-    _driveMotor.Start();
-    _driveMotor.setSpeed(_maxSpeed * GetPedal());
+    _driveMotorR.Start();
+    _driveMotorL.Start();
+    _driveMotorR.setSpeed(_maxSpeed * GetPedal());
+    _driveMotorL.setSpeed(_maxSpeed * GetPedal());
 }
 
 void Car::Brake() {
-    _driveMotor.EStop();
+    _driveMotorR.EStop();
+    _driveMotorL.EStop();
 }
 
 bool Car::RemoteOverride(int16_t input) {
@@ -68,8 +71,10 @@ bool Car::RemoteOverride(int16_t input) {
 }
 
 void Car::Stop() {
-    _driveMotor.setSpeed(0);
-    if(_driveMotor.getSpeed() == 0) _driveMotor.Stop();
+    _driveMotorR.setSpeed(0);
+    _driveMotorL.setSpeed(0);
+    if(_driveMotorR.getSpeed() == 0) _driveMotorR.Stop();
+    if(_driveMotorL.getSpeed() == 0) _driveMotorL.Stop();
 }
 
 void Car::SetEStop(bool estop) {
@@ -90,7 +95,8 @@ void Car::SetMaxSpeed(int16_t speed) {
 
 void Car::SetAcceleration(int16_t accel) {
     if(accel >= FASTEST_ACCEL && accel <= SLOWEST_ACCEL) {
-        _driveMotor.setAcceleration(accel);
+        _driveMotorR.setAcceleration(accel);
+        _driveMotorL.setAcceleration(accel);
     }
 }
 
