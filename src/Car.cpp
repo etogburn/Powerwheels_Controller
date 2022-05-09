@@ -18,6 +18,13 @@ void Car::Run() {
             Stop();
         }
 
+        if(RemoteOverride(_external_throttle)) {
+            _driveMotorR.Start();
+            _driveMotorL.Start();
+            _driveMotorR.setSpeed(_external_throttle);
+            _driveMotorL.setSpeed(_external_throttle);
+        }
+
         if(RemoteOverride(_external_steering)) {
             _steerMotor.Start();
             _steerMotor.setSpeed(_external_steering);
@@ -26,12 +33,6 @@ void Car::Run() {
             _external_steering = 0;
         }
 
-        if(RemoteOverride(_external_throttle)) {
-            _driveMotorR.Start();
-            _driveMotorL.Start();
-            _driveMotorR.setSpeed(_external_throttle);
-            _driveMotorL.setSpeed(_external_throttle);
-        }
     }
 
     _driveMotorL.Run();
@@ -98,5 +99,9 @@ void Car::SetAcceleration(int16_t accel) {
         _driveMotorR.setAcceleration(accel);
         _driveMotorL.setAcceleration(accel);
     }
+}
+
+void Car::SetMode(int8_t mode) {
+    _mode = mode;
 }
 
