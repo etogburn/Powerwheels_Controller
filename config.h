@@ -15,6 +15,12 @@
 #define SLOWEST_ACCEL 3000 //ms
 #define ACCEL_DEFAULT 1000
 
+#define PWM_MAX 255
+#define MAX_FWD PWM_MAX
+#define MAX_REV MAX_FWD * -1
+
+#define STEERING_SPEED_ADJUST_DIVISOR 2 //Speed/(thisValue) for the max adjustment amount when turning
+
 #define DRIVE_MOTOR_R_EN_PIN 10
 #define DRIVE_MOTOR_R_FWD_PIN 8
 #define DRIVE_MOTOR_R_REV_PIN 9
@@ -68,8 +74,6 @@
 #define CH6_IDX 5
 
 //End RC Reciever settings
-
-#define PWM_MAX 255
 
 //TIMER settings for motor interrupt thread
 #define TIMER_PRESCALE 64

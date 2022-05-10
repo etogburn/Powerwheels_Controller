@@ -22,6 +22,7 @@ private:
     void Go();
     int8_t GetPedal();
     bool RemoteOverride(int16_t);
+    void SetSpeed(int16_t, int16_t);
 
     bool _estop = false;
     bool _lastEStop = false;
@@ -29,7 +30,6 @@ private:
     
     volatile int16_t _external_throttle = 0;
     volatile int16_t _external_steering = 0;
-    volatile int16_t _steering_throttle_adjust = 0;
 
     volatile int16_t _maxSpeed = PWM_MAX;
 

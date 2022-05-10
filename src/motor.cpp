@@ -64,7 +64,7 @@ void Motor::setAcceleration(uint16_t accel) {
         _acceleration = accel;
     }
 
-     _accelStep = MOTOR_THREAD * PWM_MAX/_acceleration;
+     _accelStep = MOTOR_THREAD * MAX_FWD/_acceleration;
 }
 
 uint16_t Motor::getAcceleration() {
@@ -78,8 +78,8 @@ void Motor::Startup() {
 }
 
 void Motor::setMaxSpeed(int16_t newMaxSpeed) {
-    if(newMaxSpeed > PWM_MAX || newMaxSpeed <  PWM_MAX * -1) {
-        _maxSpeed = PWM_MAX;
+    if(newMaxSpeed > MAX_FWD || newMaxSpeed <  MAX_REV) {
+        _maxSpeed = MAX_FWD;
     }
     else {
         _maxSpeed = newMaxSpeed;
@@ -116,8 +116,8 @@ void Motor::JumpToSpeed() {
 }
 
 void Motor::WriteSpeed() {
-    if(_speed > PWM_MAX) _speed = PWM_MAX;
-    else if(_speed <  PWM_MAX * -1) _speed =  -1 * PWM_MAX;
+    if(_speed > MAX_FWD) _speed = MAX_FWD;
+    else if(_speed <  MAX_REV) _speed =  MAX_REV;
     if(_speed >= 0) {
         analogWrite(_fwdPin, _speed);
         analogWrite(_backPin, 0);
