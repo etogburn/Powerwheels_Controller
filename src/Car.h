@@ -18,6 +18,7 @@ public:
     
 private:
     void Brake();
+    void Start();
     void Stop();
     void Go();
     int8_t GetPedal();

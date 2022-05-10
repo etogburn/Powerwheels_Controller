@@ -20,8 +20,7 @@ void Car::Run() {
 
         if(RemoteOverride(_external_throttle)) {
             int16_t steerVal = 0;
-            _driveMotorR.Start();
-            _driveMotorL.Start();
+            Start();
             if(_mode == MODE_HIGH) {
                 steerVal = _external_steering;
             } 
@@ -59,8 +58,7 @@ int8_t Car::GetPedal() {
 }
 
 void Car::Go() {
-    _driveMotorR.Start();
-    _driveMotorL.Start();
+    Start();
     SetSpeed(_maxSpeed * GetPedal());
 }
 
@@ -81,6 +79,11 @@ void Car::Stop() {
     SetSpeed(0);
     if(_driveMotorR.getSpeed() == 0) _driveMotorR.Stop();
     if(_driveMotorL.getSpeed() == 0) _driveMotorL.Stop();
+}
+
+void Car::Start() {
+    _driveMotorR.Start();
+    _driveMotorL.Start();
 }
 
 void Car::SetSpeed(int16_t speed, int16_t steer = 0) {
