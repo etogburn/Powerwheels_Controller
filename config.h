@@ -12,14 +12,16 @@
 #define MOTOR_THREAD 50 //ms -- 16000000/64/65536 = 3.82 hz or ~250ms max. 250,000 hz or 4us min.
 
 #define FASTEST_ACCEL 50//ms
-#define SLOWEST_ACCEL 3000 //ms
+#define SLOWEST_ACCEL 4000 //ms
 #define ACCEL_DEFAULT 1000
 
 #define PWM_MAX 255
 #define MAX_FWD PWM_MAX
 #define MAX_REV MAX_FWD * -1
 
-#define STEERING_SPEED_ADJUST_DIVISOR 2 //Speed/(thisValue) for the max adjustment amount when turning
+//Divisor/Dvidend for the adjustment of the inside back wheel when turning. used as a percentage.
+#define STEERING_SPEED_ADJUST_MIN 0
+#define STEERING_SPEED_ADJUST_MAX 1000
 
 #define DRIVE_MOTOR_R_EN_PIN 10
 #define DRIVE_MOTOR_R_FWD_PIN 8

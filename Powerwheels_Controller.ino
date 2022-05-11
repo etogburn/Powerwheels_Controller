@@ -33,11 +33,9 @@ Remote_Channel ch[NUM_OF_CHANNELS] = {
 Remote_Control remote = Remote_Control(ch);
 
 void setup() {
-
   setupChannels();
 	uim.Begin();
   setupTimer();
-
 }
 
 long now = 0;
@@ -79,12 +77,15 @@ void loop() {
 
   car.SetEStop(remote.GetEStop());
   car.SetMode(remote.GetMode());
+
+ // if(remote.GetMode() == MODE_HIGH) {
+    car.SetSteeringSpeedAdj(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, STEERING_SPEED_ADJUST_MIN, STEERING_SPEED_ADJUST_MAX));
+  //} else {
+    //car.SetAcceleration(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
+  //}
   
-  car.SetAcceleration(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
   car.SetMaxSpeed(map(remote.GetRKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
-
   car.SetThrottle(remote.GetThrottle());
-
   car.SetSteer(remote.GetSteering());
 
   remote.Listen();

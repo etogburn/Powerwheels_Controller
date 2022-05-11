@@ -59,7 +59,7 @@ int8_t Car::GetPedal() {
 
 void Car::Go() {
     Start();
-    SetSpeed(_maxSpeed * GetPedal());
+    SetSpeed(_maxSpeed * GetPedal(), 0);
 }
 
 void Car::Brake() {
@@ -76,9 +76,9 @@ bool Car::RemoteOverride(int16_t input) {
 }
 
 void Car::Stop() {
-    SetSpeed(0);
-    if(_driveMotorR.getSpeed() == 0) _driveMotorR.Stop();
-    if(_driveMotorL.getSpeed() == 0) _driveMotorL.Stop();
+    SetSpeed(0, 0);
+    _driveMotorR.Stop();
+    _driveMotorL.Stop();
 }
 
 void Car::Start() {
@@ -90,16 +90,20 @@ void Car::SetSpeed(int16_t speed, int16_t steer = 0) {
     int16_t speedLeft = speed;
     int16_t speedRight = speed;
 
-    if(steer > 0) {
+    if(steer < 0) {
         //Turning right
-        speedLeft -= speedLeft*abs(steer)/PWM_MAX/STEERING_SPEED_ADJUST_DIVISOR;
-    } else if (steer < 0) {
+        speedRight -= AdjustSpeedForSteering(speedRight, steer);
+    } else if (steer > 0) {
         //Turning Left
-        speedLeft -= speedRight*abs(steer)/PWM_MAX/STEERING_SPEED_ADJUST_DIVISOR;
+        speedLeft -= AdjustSpeedForSteering(speedLeft, steer);
     }
 
     _driveMotorR.setSpeed(speedRight);
     _driveMotorL.setSpeed(speedLeft);
+}
+
+int32_t Car::AdjustSpeedForSteering(int16_t speed, int16_t steer) {
+    return (int32_t)speed * (int32_t)abs(steer)/PWM_MAX*(int32_t)_steeringSpeedAdj/STEERING_SPEED_ADJUST_MAX;
 }
 
 void Car::SetEStop(bool estop) {
@@ -108,6 +112,10 @@ void Car::SetEStop(bool estop) {
 
 void Car::SetSteer(int16_t steer) {
     _external_steering = steer;
+}
+
+void Car::SetSteeringSpeedAdj(int16_t val) {
+    _steeringSpeedAdj = val;
 }
 
 void Car::SetThrottle(int16_t throttle) {

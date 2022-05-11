@@ -12,19 +12,23 @@ Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, int16_t acceler
 
 void Motor::Start() {
     _isRunning = true;
-    //_speed = 0;
+    _estopActive = false;
     Enable();
 }
 
 void Motor::Stop() {
     _isRunning = false;
     _targetSpeed = 0;
-    Disable();
 }
 
 void Motor::Run() {
 
     if(IsRunning()) _targetSpeed = _setSpeed;
+    else {
+        if(!_estopActive && getSpeed() == 0) {
+            Disable();
+        }
+    }
     AccelToSpeed();
 }
 
@@ -142,6 +146,7 @@ void Motor::EStop() {
     _targetSpeed = 0;
     JumpToSpeed();
     _isRunning = false;
+    _estopActive = true;
 }
 
 /*
