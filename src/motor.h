@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "../config.h"
+#include "Temp_Sensor.h"
 
 
 class Motor {

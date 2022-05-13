@@ -100,3 +100,6 @@ void Car::SetAcceleration(int16_t accel) {
     }
 }
 
+void Car::SetMode(int8_t mode) {
+    _mode = mode;
+}
