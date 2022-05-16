@@ -1,30 +1,24 @@
 #include "Button_Controller.h"
 
-Button_Controller::Button_Controller(uint8_t _id) {
-    id_ = _id;
+Button_Controller::Button_Controller(uint8_t id) {
+    _id = id;
 };
 
 bool Button_Controller::IsPressed(uint8_t _buttons) {
-
-    if(_buttons & id_) {
-        if(!isPressed_) {
-            startPressed_ = millis();
+    if(_buttons & _id) {
+        if(!_isPressed) {
+            _startPressed = millis();
         }
-        isPressed_ = true;
-    }
-    else  {
-        startPressed_ = -1;
-        isPressed_ = false;
-    }
-        
-    return isPressed_;
-
+        _isPressed = true;
+    } else  {
+        _startPressed = -1;
+        _isPressed = false;
+    } 
+    return _isPressed;
 };
 
 long Button_Controller::GetTimePressed() {
+    _isPressed ? _timePressed = millis() - _startPressed : _timePressed = 0;
 
-    if(isPressed_) timePressed_ = millis() - startPressed_;
-    else timePressed_ = 0;
-
-    return timePressed_;
+    return _timePressed;
 };

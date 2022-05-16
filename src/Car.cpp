@@ -5,13 +5,10 @@ Car::Car() {
 }
 
 void Car::Run() {
-
-
     if(_estop) {
         Brake();
     } 
     else {
-
         if(GetPedal() != 0) {
             Go();
         } else {
@@ -37,7 +34,6 @@ void Car::Run() {
     _driveMotorL.Run();
     _driveMotorR.Run();
     _steerMotor.Run();
-    
 }
 
 int8_t Car::GetPedal() {
@@ -45,9 +41,9 @@ int8_t Car::GetPedal() {
         return 1;
     } else if (_revSwitch.IsActive()) {
         return -1;
-    } else {
-        return 0;
     }
+    
+    return 0;
 }
 
 void Car::Go() {
@@ -63,11 +59,7 @@ void Car::Brake() {
 }
 
 bool Car::RemoteOverride(int16_t input) {
-    if(input != 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return input != 0 ? true : false;
 }
 
 void Car::Stop() {
@@ -90,7 +82,7 @@ void Car::SetThrottle(int16_t throttle) {
 }
 
 void Car::SetMaxSpeed(int16_t speed) {
-    if(speed >=0 && speed <= PWM_MAX) _maxSpeed = speed;
+    speed >=0 && speed <= PWM_MAX ? _maxSpeed = speed : NULL;
 }
 
 void Car::SetAcceleration(int16_t accel) {
