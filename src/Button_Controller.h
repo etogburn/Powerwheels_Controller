@@ -12,12 +12,10 @@ public:
     long GetTimePressed();
 
 private:
-    uint8_t id_ = 0;
-    bool isPressed_ = false;
-    long timePressed_ = 0;
-    long startPressed_ = 0;
-
+    uint8_t _id = 0;
+    bool _isPressed = false;
+    long _timePressed = 0;
+    long _startPressed = 0;
 };
-
 
 #endif
