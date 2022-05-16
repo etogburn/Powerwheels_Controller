@@ -1,16 +1,12 @@
 #include "UIM_Controller.h"
 
 UIM_Controller::UIM_Controller(String startMsg) {
-
   _startMessage = startMsg;
-
 };
 
 void UIM_Controller::Begin() {
   clear();
   begin(16, 2);
-  
-  
 }
 
 void UIM_Controller::HandleEvents() {
@@ -42,7 +38,6 @@ void UIM_Controller::HandleEvents() {
 
 
 void UIM_Controller::SetScreen(uint8_t screen) {
-
   if(screen >= 0 && screen < NUM_OF_SCREENS) {
     _currentScreen = screen;
   } else if (screen >= NUM_OF_SCREENS) {
@@ -54,7 +49,6 @@ void UIM_Controller::SetScreen(uint8_t screen) {
 }
 
 void UIM_Controller::ReadButtons() {
-
   uint8_t buttons = readButtons();
 
   for(uint8_t i = 0; i < BTN_NUMBER; i++) {

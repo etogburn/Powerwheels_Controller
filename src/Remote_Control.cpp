@@ -24,17 +24,13 @@ void Remote_Control::Listen() {
 }
 
 int16_t Remote_Control::mapControlChannel(int16_t rawValue) {
-    
     if (rawValue < DEADBAND_MIN) {
         return constrain(map(rawValue, MIN_PULSE_VALUE, DEADBAND_MIN, -1* PWM_MAX, -1), -1* PWM_MAX, -1);
-    }
-    else if(rawValue > DEADBAND_MAX) {
+    } else if(rawValue > DEADBAND_MAX) {
         return constrain(map(rawValue, DEADBAND_MAX, MAX_PULSE_VALUE, 1,  PWM_MAX), 1, PWM_MAX);
     } 
-    else {
-        return 0;
-    }
-    
+
+    return 0;
 }
 
 int16_t Remote_Control::mapKnobChannel(int16_t rawValue) {
@@ -55,10 +51,13 @@ bool Remote_Control::GetEStop() {
 }
 
 int8_t Remote_Control::GetMode() {
-
-    if(Read(MODE_IDX) > MODE_SWITCH_MID_HIGH) return MODE_HIGH;
-    else if(Read(MODE_IDX) < MODE_SWITCH_LOW_MID) return MODE_LOW;
-    else return MODE_MED;
+    if(Read(MODE_IDX) > MODE_SWITCH_MID_HIGH) {
+        return MODE_HIGH;
+    } else if(Read(MODE_IDX) < MODE_SWITCH_LOW_MID) {
+        return MODE_LOW;
+    }
+    
+    return MODE_MED;
 }
 
 int16_t Remote_Control::GetLKnob() {

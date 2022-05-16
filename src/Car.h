@@ -15,7 +15,6 @@ public:
     void SetMaxSpeed(int16_t);
     void SetEStop(bool);
     void SetMode(int8_t);
-    
 private:
     void Brake();
     void Stop();
@@ -39,8 +38,6 @@ private:
     Switch _fwdSwitch = Switch(FWD_SWITCH, LOW);
     Switch _revSwitch = Switch(REV_SWITCH, LOW);
     Switch _hiLoSwitch = Switch(HILO_SWITCH, LOW);
-
 };
-
 
 #endif
