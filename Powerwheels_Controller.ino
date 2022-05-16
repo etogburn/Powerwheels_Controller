@@ -21,7 +21,7 @@ UIM_Controller uim ("Powerwheels");
 
 Car car = Car();
 
-Remote_Channel ch[NUM_OF_CHANNELS] = {
+Remote_Channel channels[NUM_OF_CHANNELS] = {
                             Remote_Channel(STEER_PIN),
                             Remote_Channel(THROTTLE_PIN),
                             Remote_Channel(ESTOP_PIN, CHANNEL_TIMEOUT_MED),
@@ -30,7 +30,7 @@ Remote_Channel ch[NUM_OF_CHANNELS] = {
                             Remote_Channel(CH6_PIN)
                             };
 
-Remote_Control remote = Remote_Control(ch);
+Remote_Control remote = Remote_Control(channels);
 
 void setup() {
   setupChannels();
@@ -93,12 +93,12 @@ void loop() {
 }
 
 void setupChannels() {
-  ch[STEER_IDX].Startup([]{ch[STEER_IDX].ListenInterrupt();});
-  ch[THROTTLE_IDX].Startup([]{ch[THROTTLE_IDX].ListenInterrupt();});
-  ch[ESTOP_IDX].Startup([]{ch[ESTOP_IDX].ListenInterrupt();});
-  ch[MODE_IDX].Startup([]{ch[MODE_IDX].ListenInterrupt();});
-  ch[CH5_IDX].Startup([]{ch[CH5_IDX].ListenInterrupt();});
-  ch[CH6_IDX].Startup([]{ch[CH6_IDX].ListenInterrupt();});
+  channels[STEER_IDX].Startup([]{channels[STEER_IDX].ListenInterrupt();});
+  channels[THROTTLE_IDX].Startup([]{channels[THROTTLE_IDX].ListenInterrupt();});
+  channels[ESTOP_IDX].Startup([]{channels[ESTOP_IDX].ListenInterrupt();});
+  channels[MODE_IDX].Startup([]{channels[MODE_IDX].ListenInterrupt();});
+  channels[CH5_IDX].Startup([]{channels[CH5_IDX].ListenInterrupt();});
+  channels[CH6_IDX].Startup([]{channels[CH6_IDX].ListenInterrupt();});
 }
 
 void setupTimer() {

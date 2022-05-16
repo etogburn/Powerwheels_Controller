@@ -5,14 +5,12 @@
 #include "../config.h"
 
 class Remote_Channel {
-
 public:
     Remote_Channel(uint8_t recievePin, long timeBetweenReads = 0);
     int16_t Read();
     void Listen();
     void Startup(void (*ISR_callback)(void) = NULL);
     void ListenInterrupt();
-
 private:
     uint8_t _recievePin;
     bool _useInterrupt = false;
@@ -22,8 +20,6 @@ private:
     volatile int _interrupt_timer_start = 0;
     void CalcPulseWidthPulseIn();
     void CalcPulseWidthInterrupt();
-
 };
-
 
 #endif

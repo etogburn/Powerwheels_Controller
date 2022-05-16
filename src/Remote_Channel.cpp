@@ -23,7 +23,6 @@ void Remote_Channel::Startup(void (*ISR_callback)(void)) {
     }
 
     pinMode(_recievePin, INPUT);
-    
 }
 
 void Remote_Channel::Listen() {
@@ -44,7 +43,6 @@ void Remote_Channel::CalcPulseWidthPulseIn() {
         _rawValue = pulseIn(_recievePin, HIGH, PULSEIN_TIMEOUT);
         _lastTimeRead = now;
     }
-    
 }
 
 
@@ -52,11 +50,8 @@ void Remote_Channel::CalcPulseWidthInterrupt() {
     if(digitalRead(_recievePin) == HIGH){
         _interrupt_timer_start = micros();
     }
-    else
-    {
-        if(_interrupt_timer_start > 0){
-            _rawValue = ((volatile int)micros() - _interrupt_timer_start);
-            _interrupt_timer_start = 0;
-        }
+    else if(_interrupt_timer_start > 0){
+        _rawValue = ((volatile int)micros() - _interrupt_timer_start);
+        _interrupt_timer_start = 0;
     }
 }

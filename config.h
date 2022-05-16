@@ -7,7 +7,6 @@
 #define REV_SWITCH A2
 #define HILO_SWITCH A0
 
-
 //Motor Settings
 #define MOTOR_THREAD 50 //ms -- 16000000/64/65536 = 3.82 hz or ~250ms max. 250,000 hz or 4us min.
 
@@ -74,7 +73,6 @@
 #define MODE_IDX 3
 #define CH5_IDX 4
 #define CH6_IDX 5
-
 //End RC Reciever settings
 
 //TIMER settings for motor interrupt thread

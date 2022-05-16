@@ -40,7 +40,6 @@ public:
   void HandleEvents();
   
 private:
-
   String _startMessage = "";
 
   long _lastLCDUpdate = 0;

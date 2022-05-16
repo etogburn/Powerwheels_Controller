@@ -16,7 +16,7 @@ public:
     void SetEStop(bool);
     void SetMode(int8_t);
     void SetSteeringSpeedAdj(int16_t);
-    
+
 private:
     void Brake();
     void Start();
@@ -44,8 +44,6 @@ private:
     Switch _fwdSwitch = Switch(FWD_SWITCH, LOW);
     Switch _revSwitch = Switch(REV_SWITCH, LOW);
     Switch _hiLoSwitch = Switch(HILO_SWITCH, LOW);
-
 };
-
 
 #endif

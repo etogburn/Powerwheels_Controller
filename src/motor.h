@@ -4,11 +4,8 @@
 #include <Arduino.h>
 #include "../config.h"
 
-
 class Motor {
-
 public:
-
     Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, int16_t acceleration = ACCEL_DEFAULT);
 
     // @brief Enables the motor drivers and allows the speed to be set.
@@ -32,10 +29,7 @@ public:
     void setMaxSpeed(int16_t);
     // @brief Locks the motor to 0 speed and leaves drivers active to prevent free rolling. Must call Start() after to reenable.
     void EStop();
-    
-
 private:
-
     long _lastThread = 0;
     uint8_t _fwdPin = 0;
     uint8_t _backPin = 0;
@@ -64,10 +58,6 @@ private:
     void AccelToSpeed();
     void JumpToSpeed();
     void WriteSpeed();
-
 };
-
-
-
 
 #endif

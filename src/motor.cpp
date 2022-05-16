@@ -22,12 +22,10 @@ void Motor::Stop() {
 }
 
 void Motor::Run() {
-
-    if(IsRunning()) _targetSpeed = _setSpeed;
-    else {
-        if(!_estopActive && getSpeed() == 0) {
-            Disable();
-        }
+    if(IsRunning()) {
+        _targetSpeed = _setSpeed;
+    } else if(!_estopActive && getSpeed() == 0) {
+        Disable();
     }
     AccelToSpeed();
 }
@@ -49,7 +47,6 @@ void Motor::setSpeed(int16_t speed) {
     else {
         _setSpeed = _maxSpeed;
     }
-
 }
 
 int16_t Motor::getSpeed() {
@@ -57,7 +54,6 @@ int16_t Motor::getSpeed() {
 }
 
 void Motor::setAcceleration(uint16_t accel) {
-
     if(accel < FASTEST_ACCEL) {
         _acceleration = FASTEST_ACCEL;
     }
@@ -95,7 +91,6 @@ void Motor::setMaxSpeed(int16_t newMaxSpeed) {
 }
 
 void Motor::AccelToSpeed() {
-    
     volatile int16_t speedDifference = abs(_targetSpeed - _speed);
 
     if(speedDifference < _accelStep ) {
@@ -107,11 +102,8 @@ void Motor::AccelToSpeed() {
         } else if(_targetSpeed < _speed) {
             _speed -= _accelStep;
         }
-        
     }
     WriteSpeed();
-
-    
 }
 
 void Motor::JumpToSpeed() {
@@ -120,17 +112,19 @@ void Motor::JumpToSpeed() {
 }
 
 void Motor::WriteSpeed() {
-    if(_speed > MAX_FWD) _speed = MAX_FWD;
-    else if(_speed <  MAX_REV) _speed =  MAX_REV;
+    if(_speed > MAX_FWD) {
+        _speed = MAX_FWD;
+    } else if(_speed <  MAX_REV) {
+        _speed =  -1 * MAX_REV;
+    }
+
     if(_speed >= 0) {
         analogWrite(_fwdPin, _speed);
         analogWrite(_backPin, 0);
-    }
-    else if(_speed <= 0) {
+    } else if(_speed <= 0) {
         analogWrite(_backPin, _speed*-1);
         analogWrite(_fwdPin, 0);
     }  
-    
 }
 
 void Motor::Enable() {
