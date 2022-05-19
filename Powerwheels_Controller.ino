@@ -32,6 +32,10 @@ Remote_Channel channels[NUM_OF_CHANNELS] = {
 
 Remote_Control remote = Remote_Control(channels);
 
+Temp_Sensor temp1(8);
+Temp_Sensor temp2(9);
+Temp_Sensor temp3(10);
+
 void setup() {
 
   setupChannels();
@@ -60,20 +64,23 @@ void loop() {
     // uim.print(hiLoSwitch.IsActive());
     // uim.print(" ");
 
-    uim.print("TH:");
-    uim.print(remote.GetThrottle());
-    uim.print(" ST:");
-    uim.print(remote.GetSteering());
-    uim.print(" E:");
-    uim.print(remote.GetEStop());
+    uim.print("8: ");
+    uim.print(temp1.ReadPin());
+    // uim.print(remote.GetThrottle());
+    uim.print(" 9: ");
+    uim.print(temp2.ReadPin());
+    // uim.print(remote.GetThrottle());
+    //uim.print(" E:");
+    //uim.print(remote.GetEStop());
     uim.print("           ");
     uim.setCursor(0,1);
-    uim.print("M:");
-    uim.print(remote.GetMode());
-    uim.print(" L:" );
-    uim.print(remote.GetLKnob());
-    uim.print(" R:");
-    uim.print(remote.GetRKnob());
+    uim.print("10: ");
+    uim.print(temp3.ReadPin());
+    // uim.print(remote.GetMode());
+    // uim.print(" L:" );
+    // uim.print(remote.GetLKnob());
+    // uim.print(" R:");
+    // uim.print(remote.GetRKnob());
     uim.print("            ");
   }
 

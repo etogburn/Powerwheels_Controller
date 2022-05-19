@@ -8,10 +8,10 @@ class Temp_Sensor {
 public:
     Temp_Sensor(uint8_t pin);
     uint16_t GetTemp();
+    uint16_t ReadPin();
 
 private:
     void Initialize();
-    void ReadPin();
     uint8_t _pin = 0;
     uint16_t _tempReading = 0;
     uint16_t _rawValue = 0;
@@ -24,17 +24,17 @@ private:
             {  681,  90 },
             {  711,  85 },
             {  751,  79 },
-            {  791,  72 },
+            {  595,  73 }, //
             {  811,  69 },
-            {  831,  65 },
+            {  665,  64 }, //
             {  871,  57 },
-            {  881,  55 },
-            {  901,  51 },
+            {  730,  56 }, //
+            {  790,  48 }, //
             {  921,  45 },
             {  941,  39 },
-            {  971,  28 },
+            {  882,  32 }, //
             {  981,  23 },
-            {  991,  17 },
+            {  938,  20 }, //
             { 1001,   9 },
             { 1024,   0 }
         };

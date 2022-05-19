@@ -9,6 +9,7 @@ void Temp_Sensor::Initialize() {
     pinMode(_pin, INPUT);
 }
 
-void Temp_Sensor::ReadPin() {
+uint16_t Temp_Sensor::ReadPin() {
     _rawValue = analogRead(_pin);
+    return _rawValue;
 }
