@@ -64,11 +64,11 @@ void loop() {
     // uim.print(hiLoSwitch.IsActive());
     // uim.print(" ");
 
-    uim.print("8: ");
-    uim.print(temp1.ReadPin());
-    // uim.print(remote.GetThrottle());
-    uim.print(" 9: ");
-    uim.print(temp2.ReadPin());
+    //uim.print("8: ");
+    // uim.print(temp1.ReadPin());
+    uim.print(remote.GetThrottle());
+    // uim.print(" 9: ");
+    // uim.print(temp2.ReadPin());
     // uim.print(remote.GetThrottle());
     //uim.print(" E:");
     //uim.print(remote.GetEStop());
@@ -76,6 +76,8 @@ void loop() {
     uim.setCursor(0,1);
     uim.print("10: ");
     uim.print(temp3.ReadPin());
+    uim.print(" ");
+    uim.print(temp3.GetTemp());
     // uim.print(remote.GetMode());
     // uim.print(" L:" );
     // uim.print(remote.GetLKnob());

@@ -4,6 +4,10 @@
 #include <Arduino.h>
 #include "../config.h"
 
+#define TEMP_TABLE_ROWS 17
+#define ANALOG_READ_VAL_IDX 0
+#define TEMP_CELSIUS_IDX 1
+
 class Temp_Sensor {
 public:
     Temp_Sensor(uint8_t pin);
@@ -12,31 +16,27 @@ public:
 
 private:
     void Initialize();
+    uint16_t GetTempFromTableLocation(uint8_t);
     uint8_t _pin = 0;
     uint16_t _tempReading = 0;
     uint16_t _rawValue = 0;
-    uint8_t _lastMatchedIdx = 0;
-    uint16_t temptable[20][2] = { //Analog reading, Deg C
-            {  531, 111 },
-            {  571, 105 },
-            {  611, 100 },
-            {  641,  95 },
-            {  681,  90 },
-            {  711,  85 },
-            {  751,  79 },
-            {  595,  73 }, //
-            {  811,  69 },
-            {  665,  64 }, //
-            {  871,  57 },
-            {  730,  56 }, //
-            {  790,  48 }, //
-            {  921,  45 },
-            {  941,  39 },
-            {  882,  32 }, //
-            {  981,  23 },
-            {  938,  20 }, //
-            { 1001,   9 },
-            { 1024,   0 }
+    const uint16_t _temptable[TEMP_TABLE_ROWS][2] = { //Analog reading, Deg C
+            { 1000,   0 },
+            {  942,  19 }, 
+            {  912,  25 }, //
+            {  882,  32 }, 
+            {  850,  39 },
+            {  820,  44 },
+            {  790,  48 }, 
+            {  730,  56 }, 
+            {  700,  60 },
+            {  665,  64 }, 
+            {  630,  69 },
+            {  595,  73 }, 
+            {  540,  79 }, 
+            {  485,  85 }, 
+            {  443,  90 }, 
+            {  415,  95 } 
         };
 };
 
