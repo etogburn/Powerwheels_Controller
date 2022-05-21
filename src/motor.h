@@ -3,10 +3,11 @@
 
 #include <Arduino.h>
 #include "../config.h"
+#include "Temp_Sensor.h"
 
 class Motor {
 public:
-    Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, int16_t acceleration = ACCEL_DEFAULT);
+    Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, uint8_t tempPin);
 
     // @brief Enables the motor drivers and allows the speed to be set.
     void Start();
@@ -29,6 +30,10 @@ public:
     void setMaxSpeed(int16_t);
     // @brief Locks the motor to 0 speed and leaves drivers active to prevent free rolling. Must call Start() after to reenable.
     void EStop();
+
+    uint16_t GetTemp();
+    bool IsOverTemp();
+    
 private:
     long _lastThread = 0;
     uint8_t _fwdPin = 0;
@@ -58,6 +63,10 @@ private:
     void AccelToSpeed();
     void JumpToSpeed();
     void WriteSpeed();
+
+    bool _overTempFault = false;
+
+    Temp_Sensor _motorTemp;
 };
 
 #endif
