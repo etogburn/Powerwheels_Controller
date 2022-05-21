@@ -1,14 +1,15 @@
 #include "Car.h"
 
 Car::Car() {
-
+    _steerMotor.setAcceleration(FASTEST_ACCEL);
 }
 
 void Car::Run() {
     if(_estop) {
         Brake();
-    } 
-    else {
+    } else if (IsOverTemp()) {
+        Stop();
+    } else {
         if(GetPedal() != 0) {
             Go();
         } else {
@@ -92,3 +93,16 @@ void Car::SetAcceleration(int16_t accel) {
     }
 }
 
+void Car::SetMode(int8_t mode) {
+    _mode = mode;
+}
+
+uint16_t Car::GetTemp() {
+    return _steerMotor.GetTemp();
+}
+
+bool Car::IsOverTemp() {
+    return _steerMotor.IsOverTemp() &&
+             _driveMotorL.IsOverTemp() && 
+             _driveMotorR.IsOverTemp();
+}

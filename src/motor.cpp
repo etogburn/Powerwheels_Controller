@@ -1,10 +1,10 @@
 #include "Motor.h"
 
-Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, int16_t acceleration) {
+Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, uint8_t tempPin) : _motorTemp(tempPin) {
     _fwdPin = fwdPin;
     _backPin = backPin;
     _enablePin = enablePin;
-    setAcceleration(acceleration);
+    setAcceleration(_acceleration);
 
     Startup();
     Stop();
@@ -23,8 +23,12 @@ void Motor::Stop() {
 }
 
 void Motor::Run() {
-    IsRunning() ? _targetSpeed = _setSpeed : NULL ;
-    AccelToSpeed();
+    if(IsOverTemp()) {
+        Stop();
+    } else {
+        IsRunning() ? _targetSpeed = _setSpeed : NULL ;
+        AccelToSpeed();
+    }
 }
 
 bool Motor::IsRunning() {
@@ -48,6 +52,20 @@ void Motor::setSpeed(int16_t speed) {
 
 int16_t Motor::getSpeed() {
     return _speed;
+}
+
+uint16_t Motor::GetTemp() {
+    return _motorTemp.GetTemp();
+}
+
+bool Motor::IsOverTemp() {
+    if(GetTemp() >= MOTOR_MAX_TEMP) {
+        _overTempFault = true;
+    } else if (GetTemp() <= MOTOR_MAX_TEMP - MOTOR_TEMP_HYSTERESIS) {
+        _overTempFault = false;
+    }
+
+    return _overTempFault;
 }
 
 void Motor::setAcceleration(uint16_t accel) {

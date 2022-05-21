@@ -33,11 +33,9 @@ Remote_Channel channels[NUM_OF_CHANNELS] = {
 Remote_Control remote = Remote_Control(channels);
 
 void setup() {
-
   setupChannels();
 	uim.Begin();
   setupTimer();
-
 }
 
 long now = 0;
@@ -60,20 +58,24 @@ void loop() {
     // uim.print(hiLoSwitch.IsActive());
     // uim.print(" ");
 
-    uim.print("TH:");
-    uim.print(remote.GetThrottle());
-    uim.print(" ST:");
-    uim.print(remote.GetSteering());
-    uim.print(" E:");
-    uim.print(remote.GetEStop());
+    //uim.print("8: ");
+    // uim.print(temp1.ReadPin());
+    // uim.print(remote.GetThrottle());
+    // uim.print(" 9: ");
+    // uim.print(temp2.ReadPin());
+    // uim.print(remote.GetThrottle());
+    //uim.print(" E:");
+    //uim.print(remote.GetEStop());
+    car.IsOverTemp() ? uim.print("Disabled") : uim.print("Enabled");
     uim.print("           ");
     uim.setCursor(0,1);
-    uim.print("M:");
-    uim.print(remote.GetMode());
-    uim.print(" L:" );
-    uim.print(remote.GetLKnob());
-    uim.print(" R:");
-    uim.print(remote.GetRKnob());
+    uim.print("St Temp: ");
+    uim.print(car.GetTemp());
+    // uim.print(remote.GetMode());
+    // uim.print(" L:" );
+    // uim.print(remote.GetLKnob());
+    // uim.print(" R:");
+    // uim.print(remote.GetRKnob());
     uim.print("            ");
   }
 
