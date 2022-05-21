@@ -32,16 +32,10 @@ Remote_Channel channels[NUM_OF_CHANNELS] = {
 
 Remote_Control remote = Remote_Control(channels);
 
-Temp_Sensor temp1(8);
-Temp_Sensor temp2(9);
-Temp_Sensor temp3(10);
-
 void setup() {
-
   setupChannels();
 	uim.Begin();
   setupTimer();
-
 }
 
 long now = 0;
@@ -66,18 +60,17 @@ void loop() {
 
     //uim.print("8: ");
     // uim.print(temp1.ReadPin());
-    uim.print(remote.GetThrottle());
+    // uim.print(remote.GetThrottle());
     // uim.print(" 9: ");
     // uim.print(temp2.ReadPin());
     // uim.print(remote.GetThrottle());
     //uim.print(" E:");
     //uim.print(remote.GetEStop());
+    car.IsOverTemp() ? uim.print("Disabled") : uim.print("Enabled");
     uim.print("           ");
     uim.setCursor(0,1);
-    uim.print("10: ");
-    uim.print(temp3.ReadPin());
-    uim.print(" ");
-    uim.print(temp3.GetTemp());
+    uim.print("St Temp: ");
+    uim.print(car.GetTemp());
     // uim.print(remote.GetMode());
     // uim.print(" L:" );
     // uim.print(remote.GetLKnob());

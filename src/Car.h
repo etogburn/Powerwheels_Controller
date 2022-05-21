@@ -15,6 +15,9 @@ public:
     void SetMaxSpeed(int16_t);
     void SetEStop(bool);
     void SetMode(int8_t);
+
+    uint16_t GetTemp();
+    bool IsOverTemp();
 private:
     void Brake();
     void Stop();
@@ -31,9 +34,9 @@ private:
 
     volatile int16_t _maxSpeed = PWM_MAX;
 
-    Motor _driveMotorR = Motor(DRIVE_MOTOR_R_EN_PIN, DRIVE_MOTOR_R_FWD_PIN, DRIVE_MOTOR_R_REV_PIN, ACCEL_DEFAULT);
-    Motor _driveMotorL = Motor(DRIVE_MOTOR_L_EN_PIN, DRIVE_MOTOR_L_FWD_PIN, DRIVE_MOTOR_L_REV_PIN, ACCEL_DEFAULT);
-    Motor _steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN, FASTEST_ACCEL);
+    Motor _driveMotorR = Motor(DRIVE_MOTOR_R_EN_PIN, DRIVE_MOTOR_R_FWD_PIN, DRIVE_MOTOR_R_REV_PIN, DRIVE_MOTOR_R_TEMP_PIN);
+    Motor _driveMotorL = Motor(DRIVE_MOTOR_L_EN_PIN, DRIVE_MOTOR_L_FWD_PIN, DRIVE_MOTOR_L_REV_PIN, DRIVE_MOTOR_L_TEMP_PIN);
+    Motor _steerMotor = Motor(STEER_MOTOR_EN_PIN, STEER_MOTOR_FWD_PIN, STEER_MOTOR_REV_PIN, STEER_MOTOR_TEMP_PIN);
 
     Switch _fwdSwitch = Switch(FWD_SWITCH, LOW);
     Switch _revSwitch = Switch(REV_SWITCH, LOW);
