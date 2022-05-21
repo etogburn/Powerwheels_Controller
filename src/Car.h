@@ -37,7 +37,7 @@ private:
     volatile int16_t _external_steering = 0;
 
     volatile int16_t _maxSpeed = PWM_MAX;
-    volatile int16_t _steeringSpeedAdj = 1000;
+    volatile int16_t _steeringSpeedAdj = STEERING_SPEED_ADJUST_MAX/2;
 
     Motor _driveMotorR = Motor(DRIVE_MOTOR_R_EN_PIN, DRIVE_MOTOR_R_FWD_PIN, DRIVE_MOTOR_R_REV_PIN, DRIVE_MOTOR_R_TEMP_PIN);
     Motor _driveMotorL = Motor(DRIVE_MOTOR_L_EN_PIN, DRIVE_MOTOR_L_FWD_PIN, DRIVE_MOTOR_L_REV_PIN, DRIVE_MOTOR_L_TEMP_PIN);
