@@ -24,6 +24,9 @@ The remote control overrides happen through a 6 channel transmitter with the fol
    * Note when the car is in override or has any errors
 * EEPROM saved settings to be reloaded on boot
 
+## Recent Additions
+* Thermistors implemented on all motors. Vehicle disabled when motors are over temperature.
+
 ## Software to Clean up
 * Remote Channels class 
    * Reduce the need to setup each interrupt individually in the `setupChannels` method and pass a pointer to the class into Remote Control
@@ -40,7 +43,6 @@ The hardware is comprised of the following:
 * [Adafruit I2C RGB LCD Shield with Buttons](https://www.adafruit.com/product/714)
 
 ### Hardware Todo
-* Add thermistors with 4.7kOhm pullup resistors
 * Add potentiometer to the main steering shaft.
 * Replace current RC reciever with a PPM/iBus version like [this](https://www.flysky-cn.com/ia6b-canshu)
    * This will greatly reduce the overhead required to process the input channels. They operate on 4 external interrupts and 2 pulse measurement functions currently.
