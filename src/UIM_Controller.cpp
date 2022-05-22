@@ -9,24 +9,20 @@ void UIM_Controller::Begin() {
   begin(16, 2);
 }
 
-void UIM_Controller::HandleEvents() {
-  //bool screen1[3];
+void UIM_Controller::HandleEvents(CarStats car) {
+  _car = car;
   long now = millis();
 
-  // if(now > _lastLCDUpdate + TIME_LCD_UPDATE) {
-  //   switch(_currentScreen) {
-  //   case 0:
-  //     SetScreenWelcome();
-  //     break;
-  //   case 1:
-  //     SetScreenPedals(screen1);
-  //     break;
-  //   case 2:
-  //     break;
-  //   }
-  //   SetScreen(_currentScreen);
-  //   _lastLCDUpdate = now;
-  // }
+  if(_scrollScreens && now > _lastScreenChange + TIME_SCREEN_CHANGE) {
+    _screenCount++;
+    _lastScreenChange = now;
+    clear();
+  }
+
+  if(now > _lastLCDUpdate + TIME_LCD_UPDATE) {
+    SetScreen();
+    _lastLCDUpdate = now;
+  }
   
   if(now > _lastButtonRead + TIME_BUTTON_READ) {
     ReadButtons();
@@ -35,17 +31,20 @@ void UIM_Controller::HandleEvents() {
   
 }
 
-
-
-void UIM_Controller::SetScreen(uint8_t screen) {
-  if(screen >= 0 && screen < NUM_OF_SCREENS) {
-    _currentScreen = screen;
-  } else if (screen >= NUM_OF_SCREENS) {
-    _currentScreen = 0;
+void UIM_Controller::SetScreen() {
+  if(_screenCount < 1 && _bootScreen) {
+    SetScreenWelcome();
   } else {
-    _currentScreen = NUM_OF_SCREENS - 1;
+    _bootScreen = false;
+    switch(_screenCount % NUM_OF_SCREENS) {
+    case 0:
+      SetScreenInCar();
+      break;
+    case 1:
+      SetScreenRemote();
+      break;
+    }
   }
-  
 }
 
 void UIM_Controller::ReadButtons() {
@@ -69,14 +68,15 @@ void UIM_Controller::ButtonPressed(uint8_t button) {
       break;
     case BTN_LEFT:
       //setBacklight(GREEN);
-      SetScreen(_currentScreen--);
+      _screenCount++;
       break;
     case BTN_RIGHT:
       //setBacklight(TEAL);
-      SetScreen(_currentScreen++);
+      _screenCount--;
       break;
     case BTN_SELECT:
-      setBacklight(VIOLET);
+      //setBacklight(VIOLET);
+      _scrollScreens = !_scrollScreens;
       break;
     default:
       break;
@@ -90,33 +90,46 @@ void UIM_Controller::SetScreenWelcome() {
   print(VERSION);
 }
 
-void UIM_Controller::SetScreenPedals(bool inputs[3]) {
-  print("FWD:");
-  print(inputs[0]);
-  print(" ");
-  print("REV:");
-  print(inputs[1]);
-  print(" ");
+void UIM_Controller::SetScreenInCar() {
+  home();
+  print("");
+  if(_car.pedal == 0) {
+    print("Park");
+  } else if(_car.pedal == -1) {
+    print("Rev ");
+  } else {
+    print("For ");
+  }
+  print(" L:");
+  print(_car.motorDriveL.speed);
+  print(" R:");
+  print(_car.motorDriveR.speed);
+  print("         ");
   setCursor(0,1);
-  print("HILO:");
-  print(inputs[2]);
+  print("L:");
+  print(_car.motorDriveL.temp);
+  print(" R:");
+  print(_car.motorDriveR.temp);
+  print(" S:");
+  print(_car.motorSteer.temp);
   print("  ");
 }
 
 void UIM_Controller::SetScreenRemote() {
+  home();
   print("TH:");
-  // print(remote.GetThrottle());
+  print(_car.remoteThrottle);
   print(" ST:");
-  // print(remote.GetSteering());
+  print(_car.remoteSteer);
   print(" E:");
-  // print(remote.GetEStop());
+  print(_car.estop);
   print("           ");
   setCursor(0,1);
-  // print("M:");
-  // print(remote.GetMode());
+  print("M:");
+  print(_car.mode);
   print(" L:" );
-  // print(remote.GetLKnob());
+  print(_car.remoteLKnob);
   print(" R:");
-  // print(remote.GetRKnob());
+  print(_car.remoteRKnob);
   print("            ");
 }

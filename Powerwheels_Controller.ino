@@ -3,15 +3,6 @@
  Created:	4/27/2022 9:17:35 PM
  Author:	Ethan Ogburn
 
-Todo:
-position Motor class
-eeprom saved settings
-settings adjustable remotely
-  - Modes?
-  - second knob?
-hall effect pedal
-position based steering
-
 */
 
 #include "config.h"
@@ -38,49 +29,8 @@ void setup() {
   setupTimer();
 }
 
-long now = 0;
-long lastRun = 0;
-
 // the loop function runs over and over again until power down or reset
 void loop() {
-  now = millis();
-
-  if(now > lastRun + TIME_LCD_UPDATE) {
-    uim.home();
-    // uim.print("FWD:");
-    // uim.print(fwdSwitch.IsActive());
-    // uim.print(" ");
-    // uim.print("REV:");
-    // uim.print(revSwitch.IsActive());
-    // uim.print(" ");
-    // uim.setCursor(0,1);
-    // uim.print("HILO:");
-    // uim.print(hiLoSwitch.IsActive());
-    // uim.print(" ");
-
-    //uim.print("8: ");
-    // uim.print(temp1.ReadPin());
-    // uim.print(remote.GetThrottle());
-    // uim.print(" 9: ");
-    // uim.print(temp2.ReadPin());
-    // uim.print(remote.GetThrottle());
-    //uim.print(" E:");
-    //uim.print(remote.GetEStop());
-    car.IsOverTemp() ? uim.print("Disabled") : uim.print("Enabled");
-    uim.print("           ");
-    uim.setCursor(0,1);
-    uim.print("St Temp: ");
-    uim.print(car.GetTemp());
-    // uim.print(remote.GetMode());
-    // uim.print(" L:" );
-    // uim.print(remote.GetLKnob());
-    // uim.print(" R:");
-    // uim.print(remote.GetRKnob());
-    uim.print("            ");
-  }
-
-  car.SetEStop(remote.GetEStop());
-  car.SetMode(remote.GetMode());
 
  // if(remote.GetMode() == MODE_HIGH) {
     //car.SetSteeringSpeedAdj(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, STEERING_SPEED_ADJUST_MIN, STEERING_SPEED_ADJUST_MAX));
@@ -89,11 +39,10 @@ void loop() {
   //}
   
   car.SetMaxSpeed(map(remote.GetRKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
-  car.SetThrottle(remote.GetThrottle());
-  car.SetSteer(remote.GetSteering());
+  car.SetRemote(remote.GetRemote());
 
   remote.Listen();
-  uim.HandleEvents();
+  uim.HandleEvents(car.GetStats());
 }
 
 void setupChannels() {

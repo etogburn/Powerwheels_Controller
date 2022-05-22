@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "includes.h"
 #include "../config.h"
+#include "../CarStats.h"
 
 class Remote_Control  {
 public:
@@ -16,9 +17,9 @@ public:
     int16_t GetRKnob();
     bool GetEStop();
     int8_t GetMode();
+    CarStats GetRemote();
 private:
     Remote_Channel* ch[NUM_OF_CHANNELS];
-    uint8_t _channelToListen = 0;
 
     int16_t Read(uint8_t);
     int16_t mapControlChannel(int16_t);

@@ -7,6 +7,7 @@
 #include <utility/Adafruit_MCP23017.h>
 #include "Button_Controller.h"
 #include "../config.h"
+#include "../CarStats.h"
 
 //LCD Colors
 #define RED 0x1
@@ -24,10 +25,7 @@
 #define BTN_RIGHT 3
 #define BTN_SELECT 4
 
-#define TIME_LCD_UPDATE 100 //ms between display updates
-#define TIME_BUTTON_READ 10 //ms between button reads
-
-#define NUM_OF_SCREENS 2 //0 based index
+#define NUM_OF_SCREENS 2 //1 based index. does not include the welcome screen.
 
 class UIM_Controller : public Adafruit_RGBLCDShield {
 public:
@@ -37,23 +35,25 @@ public:
   void Begin();
 
   // @brief Screen 1 - FWD, REV, HILO
-  void HandleEvents();
+  void HandleEvents(CarStats car);
   
 private:
   String _startMessage = "";
 
+  long _lastScreenChange = 0;
   long _lastLCDUpdate = 0;
   long _lastButtonRead = 0;
 
-  uint8_t _currentScreen = 0;
+  uint8_t _screenCount = 0;
+  bool _scrollScreens = true;
+  bool _bootScreen = true;
 
-  void SetScreen(uint8_t);
+  CarStats _car;
+
+  void SetScreen();
   void SetScreenWelcome();
-  void SetScreenPedals(bool inputs[3]);
+  void SetScreenInCar();
   void SetScreenRemote();
-
-  long val = 0;
-
 
   void ReadButtons();
 

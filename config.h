@@ -1,6 +1,10 @@
 //Configuration values all go here
 
-#define VERSION "1.0.0"
+#define VERSION "1.1.2"
+
+#define TIME_SCREEN_CHANGE 5000 //ms between going to a different screen
+#define TIME_LCD_UPDATE 100 //ms between display updates
+#define TIME_BUTTON_READ 10 //ms between button reads
 
 //In car Switches
 #define FWD_SWITCH A1

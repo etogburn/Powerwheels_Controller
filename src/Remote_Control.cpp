@@ -67,3 +67,15 @@ int16_t Remote_Control::GetLKnob() {
 int16_t Remote_Control::GetRKnob() {
     return mapKnobChannel(Read(CH6_IDX));
 }
+
+CarStats Remote_Control::GetRemote() {
+    CarStats car;
+    car.remoteThrottle = GetThrottle();
+    car.remoteSteer = GetSteering();
+    car.remoteLKnob = GetLKnob();
+    car.remoteRKnob = GetRKnob();
+    car.estop = GetEStop();
+    car.mode = GetMode();
+
+    return car;
+}
