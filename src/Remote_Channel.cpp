@@ -16,22 +16,39 @@ int16_t Remote_Channel::Read() {
 }
 
 void Remote_Channel::Startup(void (*ISR_callback)(void)) {
+    pinMode(_recievePin, INPUT);
+    #ifdef SERIAL_DEBUG 
+    Serial.print(_recievePin);
+    #endif
+
     if(digitalPinToInterrupt(_recievePin) == NOT_AN_INTERRUPT) {
         _useInterrupt = false;
-    } 
-    else {
+        #ifdef SERIAL_DEBUG 
+        Serial.println(" doesn't use interrupt");
+        #endif
+    } else {
+        #ifdef SERIAL_DEBUG 
+        Serial.println(" uses interrupt");
+        #endif
         _useInterrupt = true;
         noInterrupts();
-        attachInterrupt(digitalPinToInterrupt(_recievePin), ISR_callback, CHANGE);
+        #ifdef MEGA_BOARD
+            attachInterrupt(digitalPinToInterrupt(_recievePin), ISR_callback, CHANGE);
+        #endif
+        #ifdef DUE_BOARD
+            attachInterrupt(_recievePin, ISR_callback, CHANGE);
+        #endif
         interrupts();
     }
-
-    pinMode(_recievePin, INPUT);
 }
 
 void Remote_Channel::Listen() {
     if(!_useInterrupt) {
         CalcPulseWidthPulseIn();
+        #ifdef SERIAL_DEBUG 
+        Serial.print("Regular Listen on ");
+        Serial.println(_recievePin);
+        #endif
     }
 }
 
@@ -49,7 +66,6 @@ void Remote_Channel::CalcPulseWidthPulseIn() {
         _lastTimeRead = now;
     }
 }
-
 
 void Remote_Channel::CalcPulseWidthInterrupt() {
     if(digitalRead(_recievePin) == HIGH){

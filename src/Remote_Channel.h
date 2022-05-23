@@ -8,7 +8,7 @@
 
 class Remote_Channel {
 public:
-    Remote_Channel(uint8_t recievePin, long timeBetweenReads = 0);
+    Remote_Channel(uint8_t recievePin, long timeBetweenReads = CHANNEL_TIMEOUT_FAST);
     int16_t Read();
     void Listen();
     void Startup(void (*ISR_callback)(void) = NULL);
@@ -17,7 +17,7 @@ private:
     uint8_t _recievePin;
     bool _useInterrupt = false;
     volatile int16_t _rawValue[NUM_TO_AVG] = {CENTER_PULSE_VALUE};//, CENTER_PULSE_VALUE, CENTER_PULSE_VALUE};
-    uint8_t _idx = 0;
+    volatile uint8_t _idx = 0;
     long _lastTimeRead = 0;
     long _timeBetweenReads = 0;
     volatile int _interrupt_timer_start = 0;

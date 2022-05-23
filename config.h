@@ -3,6 +3,8 @@
 #define VERSION "1.1.2"
 #define DUE_BOARD
 // #define MEGA_BOARD
+#define SERIAL_DEBUG
+//#define USE_UIM
 
 #define TIME_SCREEN_CHANGE 5000 //ms between going to a different screen
 #define TIME_LCD_UPDATE 100 //ms between display updates
@@ -48,7 +50,7 @@
 #define STEER_MOTOR_TEMP_PIN A10
 
 //RC Transmitter/Reciever Settings
-#define CHANNEL_TIMEOUT_FAST 10
+#define CHANNEL_TIMEOUT_FAST 20
 #define CHANNEL_TIMEOUT_MED 150
 #define CHANNEL_TIMEOUT_SLOW 1000
 #define NUM_OF_CHANNELS 6

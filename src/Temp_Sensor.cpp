@@ -54,8 +54,33 @@ uint16_t Temp_Sensor::GetTempFromTableLocation(uint8_t tableIndex) {
         int16_t analogReadDifference = lastIdxAnalog - thisIdxAnalog;
         int16_t tempDifference = thisIdxTemp - lastIdxTemp;
 
+        //linear interpolation calculation to find the point between locations in the array.
         returnVal = ((_rawValue - thisIdxAnalog) * tempDifference + analogReadDifference/2);
         returnVal = thisIdxTemp - returnVal / analogReadDifference;
     } 
-    return returnVal;
+    
+    return returnVal; //degrees C
 }
+
+// uint16_t Temp_Sensor::GetTempTable(uint8_t firstIdx, uint8_t secondIdx) {
+//     const uint16_t tempTable[TEMP_TABLE_ROWS][2] PROGMEM = { //Analog reading, Deg C
+//             { 1000,   0 },
+//             {  942,  19 }, 
+//             {  912,  25 }, 
+//             {  882,  32 }, 
+//             {  850,  39 },
+//             {  820,  44 },
+//             {  790,  48 }, 
+//             {  730,  56 }, 
+//             {  700,  60 },
+//             {  665,  64 }, 
+//             {  630,  69 },
+//             {  595,  73 }, 
+//             {  540,  79 }, 
+//             {  485,  85 }, 
+//             {  443,  90 }, 
+//             {  415,  95 } 
+//         };
+
+//     return (uint16_t)*tempTable[firstIdx, secondIdx];
+// }

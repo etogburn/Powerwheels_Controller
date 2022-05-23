@@ -12,8 +12,9 @@
   #include <DueTimer.h>
 #endif
 
+#ifdef USE_UIM
 UIM_Controller uim ("Powerwheels");
-
+#endif
 Car car = Car();
 
 Remote_Channel channels[NUM_OF_CHANNELS] = {
@@ -28,24 +29,33 @@ Remote_Channel channels[NUM_OF_CHANNELS] = {
 Remote_Control remote = Remote_Control(channels);
 
 void setup() {
-  #ifdef DUE_BOARD
+  #ifdef SERIAL_DEBUG
   Serial.begin(115200);
-  Serial.println("I'm here");
+  Serial.println("Starting...");
   #endif
   setupChannels();
+  #ifdef USE_UIM
 	uim.Begin();
+  #endif
   setupTimer();
 }
 
+#ifdef SERIAL_DEBUG
 long now;
 long lastRun = 0;
+#endif
 
 // the loop function runs over and over again until power down or reset
 void loop() {
-  #ifdef DUE_BOARD
+  #ifdef SERIAL_DEBUG
   now = millis();
   if(now > lastRun + 500) {
-    Serial.println(remote.GetThrottle());
+    //Serial.println(remote.GetLKnob());
+    for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
+      Serial.print(channels[i].Read());
+      Serial.print(", ");
+    }
+    Serial.println(" ");
     lastRun = now;
   }
   #endif
@@ -63,7 +73,9 @@ void loop() {
   car.SetRemote(remote.GetRemote());
 
   remote.Listen();
+  #ifdef USE_UIM
   uim.HandleEvents(car.GetStats());
+  #endif
 }
 
 void setupChannels() {
@@ -76,7 +88,6 @@ void setupChannels() {
 }
 
 void setupTimer() {
-
   noInterrupts(); // disable all interrupts
 #ifdef MEGA_BOARD
   TCCR5A = 0;

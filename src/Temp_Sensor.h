@@ -21,6 +21,7 @@ private:
     uint16_t _tempReading = 0;
     uint16_t _rawValue = 0;
     long _lastTempCalc = 0;
+    // uint16_t GetTempTable(uint8_t, uint8_t);
     const uint16_t _temptable[TEMP_TABLE_ROWS][2] = { //Analog reading, Deg C
             { 1000,   0 },
             {  942,  19 }, 
