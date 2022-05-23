@@ -1,6 +1,8 @@
 //Configuration values all go here
 
 #define VERSION "1.1.2"
+#define DUE_BOARD
+// #define MEGA_BOARD
 
 #define TIME_SCREEN_CHANGE 5000 //ms between going to a different screen
 #define TIME_LCD_UPDATE 100 //ms between display updates
@@ -28,16 +30,17 @@
 
 #define MOTOR_MAX_TEMP 60 //degrees C
 #define MOTOR_TEMP_HYSTERESIS 5
+#define TEMP_CALC_FREQ 1000 //ms
 
 #define DRIVE_MOTOR_R_EN_PIN 10
 #define DRIVE_MOTOR_R_FWD_PIN 8
 #define DRIVE_MOTOR_R_REV_PIN 9
-#define DRIVE_MOTOR_R_TEMP_PIN A8
+#define DRIVE_MOTOR_R_TEMP_PIN A9
 
 #define DRIVE_MOTOR_L_EN_PIN 13
 #define DRIVE_MOTOR_L_FWD_PIN 12
 #define DRIVE_MOTOR_L_REV_PIN 11
-#define DRIVE_MOTOR_L_TEMP_PIN A9
+#define DRIVE_MOTOR_L_TEMP_PIN A8
 
 #define STEER_MOTOR_EN_PIN 7
 #define STEER_MOTOR_FWD_PIN 6
@@ -46,7 +49,7 @@
 
 //RC Transmitter/Reciever Settings
 #define CHANNEL_TIMEOUT_FAST 10
-#define CHANNEL_TIMEOUT_MED 100
+#define CHANNEL_TIMEOUT_MED 150
 #define CHANNEL_TIMEOUT_SLOW 1000
 #define NUM_OF_CHANNELS 6
 

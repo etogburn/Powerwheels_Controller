@@ -69,14 +69,16 @@ void UIM_Controller::ButtonPressed(uint8_t button) {
     case BTN_LEFT:
       //setBacklight(GREEN);
       _screenCount++;
+      _scrollScreens = false;
       break;
     case BTN_RIGHT:
       //setBacklight(TEAL);
       _screenCount--;
+      _scrollScreens = false;
       break;
     case BTN_SELECT:
       //setBacklight(VIOLET);
-      _scrollScreens = !_scrollScreens;
+      _scrollScreens = true;
       break;
     default:
       break;

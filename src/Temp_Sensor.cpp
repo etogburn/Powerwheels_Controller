@@ -15,21 +15,24 @@ uint16_t Temp_Sensor::ReadPin() {
 }
 
 uint16_t Temp_Sensor::GetTemp() {
-    ReadPin();
-
-    if(_rawValue >= _temptable[0][ANALOG_READ_VAL_IDX]) {
+    long now = millis();
+    
+    if(now > _lastTempCalc + TEMP_CALC_FREQ) {
+        ReadPin();
+        if(_rawValue >= _temptable[0][ANALOG_READ_VAL_IDX]) {
         _tempReading = _temptable[0][TEMP_CELSIUS_IDX];
-    } else if(_rawValue <= _temptable[TEMP_TABLE_ROWS - 1][ANALOG_READ_VAL_IDX]) {
-        _tempReading = _temptable[TEMP_TABLE_ROWS - 1][TEMP_CELSIUS_IDX];
-    } else {
-        for(int8_t i = 1; i < TEMP_TABLE_ROWS; i++) {
-            uint16_t tableVal = _temptable[i][ANALOG_READ_VAL_IDX];
-            if(_rawValue == tableVal) {
-                _tempReading = _temptable[i][TEMP_CELSIUS_IDX];
-                break;
-            } else if(_rawValue > tableVal) {
-                _tempReading = GetTempFromTableLocation(i);
-                break;
+        } else if(_rawValue <= _temptable[TEMP_TABLE_ROWS - 1][ANALOG_READ_VAL_IDX]) {
+            _tempReading = _temptable[TEMP_TABLE_ROWS - 1][TEMP_CELSIUS_IDX];
+        } else {
+            for(int8_t i = 1; i < TEMP_TABLE_ROWS; i++) {
+                uint16_t tableVal = _temptable[i][ANALOG_READ_VAL_IDX];
+                if(_rawValue == tableVal) {
+                    _tempReading = _temptable[i][TEMP_CELSIUS_IDX];
+                    break;
+                } else if(_rawValue > tableVal) {
+                    _tempReading = GetTempFromTableLocation(i);
+                    break;
+                }
             }
         }
     }

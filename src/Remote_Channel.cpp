@@ -8,7 +8,11 @@ Remote_Channel::Remote_Channel(uint8_t recievePin, long timeBetweenReads) {
 }
 
 int16_t Remote_Channel::Read() {
-    return _rawValue;
+    uint16_t output = 0;
+    for(uint8_t i = 0; i < NUM_TO_AVG; i++) {
+        output += _rawValue[i];
+    }
+    return output/NUM_TO_AVG;
 }
 
 void Remote_Channel::Startup(void (*ISR_callback)(void)) {
@@ -40,7 +44,8 @@ void Remote_Channel::CalcPulseWidthPulseIn() {
     long now = millis();
 
     if(now > _lastTimeRead + _timeBetweenReads) {
-        _rawValue = pulseIn(_recievePin, HIGH, PULSEIN_TIMEOUT);
+        _rawValue[_idx] = pulseIn(_recievePin, HIGH, PULSEIN_TIMEOUT);
+        IncrementIDX();
         _lastTimeRead = now;
     }
 }
@@ -51,7 +56,13 @@ void Remote_Channel::CalcPulseWidthInterrupt() {
         _interrupt_timer_start = micros();
     }
     else if(_interrupt_timer_start > 0){
-        _rawValue = ((volatile int)micros() - _interrupt_timer_start);
+        _rawValue[_idx] = ((volatile int)micros() - _interrupt_timer_start);
+        IncrementIDX();
         _interrupt_timer_start = 0;
     }
+}
+
+void Remote_Channel::IncrementIDX() {
+    _idx++;
+    _idx == NUM_TO_AVG ? _idx = 0 : 0;
 }

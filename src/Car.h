@@ -18,7 +18,7 @@ public:
     void SetMode(int8_t);
     void SetSteeringSpeedAdj(int16_t);
     void SetRemote(CarStats);
-    
+
     bool IsOverTemp();
 
     CarStats GetStats();
