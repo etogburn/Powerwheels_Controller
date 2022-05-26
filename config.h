@@ -1,10 +1,10 @@
 //Configuration values all go here
 
 #define VERSION "1.1.2"
-#define DUE_BOARD
-// #define MEGA_BOARD
-#define SERIAL_DEBUG
-//#define USE_UIM
+//#define DUE_BOARD
+#define MEGA_BOARD
+//#define SERIAL_DEBUG
+#define USE_UIM
 
 #define TIME_SCREEN_CHANGE 5000 //ms between going to a different screen
 #define TIME_LCD_UPDATE 100 //ms between display updates
@@ -30,7 +30,7 @@
 #define STEERING_SPEED_ADJUST_MIN 0
 #define STEERING_SPEED_ADJUST_MAX 1000
 
-#define MOTOR_MAX_TEMP 60 //degrees C
+#define MOTOR_MAX_TEMP 70 //degrees C
 #define MOTOR_TEMP_HYSTERESIS 5
 #define TEMP_CALC_FREQ 1000 //ms
 
@@ -98,4 +98,12 @@
   #error Motor thread is too long.
 #elif TIMER_PRELOAD < 0
   #error MotorThread is too short.
+#endif
+
+#if defined(DUE_BOARD) && defined(MEGA_BOARD)
+  #error Both Due and Mega are defined. Only pick one.
+#endif
+
+#if defined(SERIAL_DEBUG) && defined(MEGA_BOARD)
+  #error Serial Debug is not supported on MEGA_BOARD.
 #endif

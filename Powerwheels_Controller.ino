@@ -2,7 +2,6 @@
  Name:		Powerwheels_Controller.ino
  Created:	4/27/2022 9:17:35 PM
  Author:	Ethan Ogburn
-
 */
 
 #include "config.h"
@@ -40,7 +39,7 @@ void setup() {
   setupTimer();
 }
 
-#ifdef SERIAL_DEBUG
+#if defined(SERIAL_DEBUG) || (defined(MEGA_BOARD) && defined(USE_UIM))
 long now;
 long lastRun = 0;
 #endif
@@ -59,6 +58,21 @@ void loop() {
     lastRun = now;
   }
   #endif
+
+  #if defined(MEGA_BOARD) && defined(USE_UIM)
+    if(now > lastRun + TIME_LCD_UPDATE) {
+      uim.home();
+      car.IsOverTemp() ? uim.print("Motor Over Temp") : uim.print("Running...");
+      uim.print("     ");
+      uim.setCursor(0,1);
+      uim.print(car.GetLTemp());
+      uim.print(" C");
+      uim.setCursor(0,8);
+      uim.print(car.GetRTemp());
+      uim.print(" C");
+    }
+  #endif
+
  // if(remote.GetMode() == MODE_HIGH) {
     //car.SetSteeringSpeedAdj(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, STEERING_SPEED_ADJUST_MIN, STEERING_SPEED_ADJUST_MAX));
   //} else {
@@ -73,7 +87,7 @@ void loop() {
   car.SetRemote(remote.GetRemote());
 
   remote.Listen();
-  #ifdef USE_UIM
+  #if defined(USE_UIM) && !defined(MEGA_BOARD)
   uim.HandleEvents(car.GetStats());
   #endif
 }

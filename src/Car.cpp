@@ -141,6 +141,16 @@ int16_t Car::GetSpeed() {
     return max(_driveMotorL.getSpeed(), _driveMotorR.getSpeed());
 }
 
+uint16_t Car::GetRTemp() {
+    GetTemp();
+    return _car.motorDriveR.temp;
+}
+
+uint16_t Car::GetLTemp() {
+    GetTemp();
+    return _car.motorDriveL.temp;
+}
+
 bool Car::IsOverTemp() {
     return _steerMotor.IsOverTemp() &&
              _driveMotorL.IsOverTemp() && 
