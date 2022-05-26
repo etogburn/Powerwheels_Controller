@@ -19,7 +19,7 @@
 #endif
 #include "Adafruit_MCP23017.h"
 #ifdef __SAM3X8E__ // Arduino Due
-#define WIRE Wire1
+#define WIRE Wire
 #else
 #define WIRE Wire
 #endif

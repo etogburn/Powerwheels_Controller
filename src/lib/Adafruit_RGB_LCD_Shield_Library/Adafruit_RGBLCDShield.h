@@ -7,7 +7,7 @@
 
 #include "Print.h"
 #include <inttypes.h>
-#include <utility/Adafruit_MCP23017.h>
+#include "utility/Adafruit_MCP23017.h"
 
 // commands
 #define LCD_CLEARDISPLAY 0x01 //!< Clear display, set cursor position to zero
