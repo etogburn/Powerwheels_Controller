@@ -16,7 +16,8 @@ public:
     void SetEStop(bool);
     void SetMode(int8_t);
 
-    uint16_t GetTemp();
+    uint16_t GetRTemp();
+    uint16_t GetLTemp();
     bool IsOverTemp();
 private:
     void Brake();

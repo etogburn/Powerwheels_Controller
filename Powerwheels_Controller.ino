@@ -2,16 +2,6 @@
  Name:		Powerwheels_Controller.ino
  Created:	4/27/2022 9:17:35 PM
  Author:	Ethan Ogburn
-
-Todo:
-position Motor class
-eeprom saved settings
-settings adjustable remotely
-  - Modes?
-  - second knob?
-hall effect pedal
-position based steering
-
 */
 
 #include "config.h"
@@ -47,36 +37,14 @@ void loop() {
 
   if(now > lastRun + TIME_LCD_UPDATE) {
     uim.home();
-    // uim.print("FWD:");
-    // uim.print(fwdSwitch.IsActive());
-    // uim.print(" ");
-    // uim.print("REV:");
-    // uim.print(revSwitch.IsActive());
-    // uim.print(" ");
-    // uim.setCursor(0,1);
-    // uim.print("HILO:");
-    // uim.print(hiLoSwitch.IsActive());
-    // uim.print(" ");
-
-    //uim.print("8: ");
-    // uim.print(temp1.ReadPin());
-    // uim.print(remote.GetThrottle());
-    // uim.print(" 9: ");
-    // uim.print(temp2.ReadPin());
-    // uim.print(remote.GetThrottle());
-    //uim.print(" E:");
-    //uim.print(remote.GetEStop());
-    car.IsOverTemp() ? uim.print("Disabled") : uim.print("Enabled");
-    uim.print("           ");
+    car.IsOverTemp() ? uim.print("Motor Over Temp") : uim.print("Running...");
+    uim.print("     ");
     uim.setCursor(0,1);
-    uim.print("St Temp: ");
-    uim.print(car.GetTemp());
-    // uim.print(remote.GetMode());
-    // uim.print(" L:" );
-    // uim.print(remote.GetLKnob());
-    // uim.print(" R:");
-    // uim.print(remote.GetRKnob());
-    uim.print("            ");
+    uim.print(car.GetLTemp());
+    uim.print(" C");
+    uim.setCursor(0,8);
+    uim.print(car.GetRTemp());
+    uim.print(" C");
   }
 
   car.SetEStop(remote.GetEStop());
@@ -103,7 +71,6 @@ void setupChannels() {
 }
 
 void setupTimer() {
-
   noInterrupts(); // disable all interrupts
   TCCR5A = 0;
   TCCR5B = 0;

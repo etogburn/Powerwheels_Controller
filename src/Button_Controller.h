@@ -2,8 +2,8 @@
 #define BUTTON_CONTROLLER_h
 
 #include <Arduino.h>
-#include <Adafruit_RGBLCDShield.h>
-#include <utility/Adafruit_MCP23017.h>
+#include "lib/Adafruit_RGB_LCD_Shield_Library/Adafruit_RGBLCDShield.h"
+#include "lib/Adafruit_RGB_LCD_Shield_Library/utility/Adafruit_MCP23017.h"
 
 class Button_Controller {
 public:

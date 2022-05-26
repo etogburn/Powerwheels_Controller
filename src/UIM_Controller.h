@@ -3,8 +3,8 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_RGBLCDShield.h>
-#include <utility/Adafruit_MCP23017.h>
+#include "lib/Adafruit_RGB_LCD_Shield_Library/Adafruit_RGBLCDShield.h"
+#include "lib/Adafruit_RGB_LCD_Shield_Library/utility/Adafruit_MCP23017.h"
 #include "Button_Controller.h"
 #include "../config.h"
 
@@ -53,7 +53,6 @@ private:
   void SetScreenRemote();
 
   long val = 0;
-
 
   void ReadButtons();
 

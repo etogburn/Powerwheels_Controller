@@ -97,8 +97,12 @@ void Car::SetMode(int8_t mode) {
     _mode = mode;
 }
 
-uint16_t Car::GetTemp() {
-    return _steerMotor.GetTemp();
+uint16_t Car::GetRTemp() {
+    return _driveMotorR.GetTemp();
+}
+
+uint16_t Car::GetLTemp() {
+    return _driveMotorL.GetTemp();
 }
 
 bool Car::IsOverTemp() {

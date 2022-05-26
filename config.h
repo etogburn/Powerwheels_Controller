@@ -14,7 +14,7 @@
 #define SLOWEST_ACCEL 3000 //ms
 #define ACCEL_DEFAULT 1000
 
-#define MOTOR_MAX_TEMP 60 //degrees C
+#define MOTOR_MAX_TEMP 70 //degrees C
 #define MOTOR_TEMP_HYSTERESIS 5
 
 #define DRIVE_MOTOR_R_EN_PIN 10
