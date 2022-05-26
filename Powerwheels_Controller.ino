@@ -11,10 +11,11 @@
   #include <DueTimer.h>
 #endif
 
+Car car = Car();
+
 #ifdef USE_UIM
 UIM_Controller uim ("Powerwheels");
 #endif
-Car car = Car();
 
 Remote_Channel channels[NUM_OF_CHANNELS] = {
                             Remote_Channel(STEER_PIN),
@@ -29,12 +30,12 @@ Remote_Control remote = Remote_Control(channels);
 
 void setup() {
   #ifdef SERIAL_DEBUG
-  Serial.begin(115200);
-  Serial.println("Starting...");
+    Serial.begin(115200);
+    Serial.println("Starting...");
   #endif
   setupChannels();
   #ifdef USE_UIM
-	uim.Begin();
+	  uim.Begin();
   #endif
   setupTimer();
 }
@@ -49,12 +50,7 @@ void loop() {
   #ifdef SERIAL_DEBUG
   now = millis();
   if(now > lastRun + 500) {
-    //Serial.println(remote.GetLKnob());
-    for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
-      Serial.print(channels[i].Read());
-      Serial.print(", ");
-    }
-    Serial.println(" ");
+    SerialDebug();
     lastRun = now;
   }
   #endif
@@ -87,7 +83,7 @@ void loop() {
   car.SetRemote(remote.GetRemote());
 
   remote.Listen();
-  #if defined(USE_UIM) && !defined(MEGA_BOARD)
+  #if defined(USE_UIM) && defined(DUE_BOARD)
   uim.HandleEvents(car.GetStats());
   #endif
 }
@@ -130,5 +126,34 @@ ISR(TIMER5_OVF_vect) // interrupt service routine that wraps a user defined func
   InterruptFunctions();
   TCNT5 = TIMER_PRELOAD;  // preload timer
   //interrupts();
+}
+#endif
+
+#ifdef SERIAL_DEBUG
+void SerialDebug() {
+    Serial.print("Raw Channels: ");
+    for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
+      Serial.print(channels[i].Read());
+      Serial.print(", ");
+    }
+    Serial.println(" ");
+    Serial.print("Estop = ");
+    Serial.print(car.GetStats().estop);
+    Serial.print(", Mode = ");
+    Serial.print(car.GetStats().mode);
+    Serial.print(", Ped = ");
+    Serial.println(car.GetStats().pedal);
+    Serial.print("Left Motor= ");
+    Serial.print(car.GetStats().motorDriveL.speed);
+    Serial.print(", ");
+    Serial.println(car.GetStats().motorDriveL.temp);
+    Serial.print("Right Motor= ");
+    Serial.print(car.GetStats().motorDriveR.speed);
+    Serial.print(", ");
+    Serial.println(car.GetStats().motorDriveR.temp);
+    Serial.print("Steer Motor= ");
+    Serial.print(car.GetStats().motorDriveR.speed);
+    Serial.print(", ");
+    Serial.println(car.GetStats().motorDriveR.temp);
 }
 #endif

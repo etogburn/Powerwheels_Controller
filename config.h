@@ -1,9 +1,9 @@
 //Configuration values all go here
+#include <Arduino.h>
 
 #define VERSION "1.1.2"
-//#define DUE_BOARD
-#define MEGA_BOARD
-//#define SERIAL_DEBUG
+
+#define SERIAL_DEBUG //Unsupported on the Arduino Mega at this time.
 #define USE_UIM
 
 #define TIME_SCREEN_CHANGE 5000 //ms between going to a different screen
@@ -93,17 +93,32 @@
 //TIMER settings for motor interrupt thread
 #define TIMER_PRESCALE 64
 #define TIMER_PRELOAD 65536 - 16000000/TIMER_PRESCALE/(1000/MOTOR_THREAD) // preload timer 65536-16MHz/8/100Hz. 20000 timer counts.
-#define TIMER_PRESCALER (1 << CS51) | (1 << CS50)  // 64 prescaler
+
+#if TIMER_PRESCALE == 1
+  #define TIMER_PRESCALER (1 << CS50) 
+#elif TIMER_PRESCALE == 8
+  #define TIMER_PRESCALER (1 << CS51) 
+#elif TIMER_PRESCALE == 64
+  #define TIMER_PRESCALER (1 << CS51) | (1 << CS50) 
+#elif TIMER_PRESCALE == 256
+  #define TIMER_PRESCALER (1 << CS52) 
+#elif TIMER_PRESCALE == 1024
+  #define TIMER_PRESCALER (1 << CS52) | (1 << CS50) 
+#else
+  #error Invalid Timer Prescale value.
+#endif
+
 #if TIMER_PRELOAD >= 65536
   #error Motor thread is too long.
 #elif TIMER_PRELOAD < 0
   #error MotorThread is too short.
 #endif
 
-#if defined(DUE_BOARD) && defined(MEGA_BOARD)
-  #error Both Due and Mega are defined. Only pick one.
+#ifdef __SAM3X8E__
+  #define DUE_BOARD
 #endif
 
-#if defined(SERIAL_DEBUG) && defined(MEGA_BOARD)
-  #error Serial Debug is not supported on MEGA_BOARD.
+#ifdef __AVR_ATmega2560__ 
+  #define MEGA_BOARD
+  #undef SERIAL_DEBUG
 #endif

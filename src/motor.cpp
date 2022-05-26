@@ -91,6 +91,9 @@ void Motor::Startup() {
     pinMode(_fwdPin, OUTPUT);
     pinMode(_backPin, OUTPUT);
     pinMode(_enablePin, OUTPUT);
+    digitalWrite(_enablePin, LOW);
+    digitalWrite(_backPin, LOW);
+    digitalWrite(_fwdPin, LOW);
 }
 
 void Motor::setMaxSpeed(int16_t newMaxSpeed) {
