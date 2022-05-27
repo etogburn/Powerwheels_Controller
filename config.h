@@ -10,6 +10,9 @@
 #define TIME_LCD_UPDATE 100 //ms between display updates
 #define TIME_BUTTON_READ 10 //ms between button reads
 
+#define IBUS_RECIEVER
+#define IBUS_INPUT Serial1
+
 //In car Switches
 #define FWD_SWITCH A1
 #define REV_SWITCH A2

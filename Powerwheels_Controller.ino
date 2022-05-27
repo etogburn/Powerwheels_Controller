@@ -14,28 +14,34 @@
 Car car = Car();
 
 #ifdef USE_UIM
-UIM_Controller uim ("Powerwheels");
+  UIM_Controller uim ("Powerwheels");
 #endif
 
-Remote_Channel channels[NUM_OF_CHANNELS] = {
-                            Remote_Channel(STEER_PIN),
-                            Remote_Channel(THROTTLE_PIN),
-                            Remote_Channel(ESTOP_PIN, CHANNEL_TIMEOUT_MED),
-                            Remote_Channel(MODE_PIN, CHANNEL_TIMEOUT_MED),
-                            Remote_Channel(CH5_PIN),
-                            Remote_Channel(CH6_PIN)
-                            };
+#ifdef IBUS_RECIEVER
+  Remote_Control remote = Remote_Control(IBUS_INPUT);
+#else
+  Remote_Channel channels[NUM_OF_CHANNELS] = {
+                              Remote_Channel(STEER_PIN),
+                              Remote_Channel(THROTTLE_PIN),
+                              Remote_Channel(ESTOP_PIN, CHANNEL_TIMEOUT_MED),
+                              Remote_Channel(MODE_PIN, CHANNEL_TIMEOUT_MED),
+                              Remote_Channel(CH5_PIN),
+                              Remote_Channel(CH6_PIN)
+                              };
 
-Remote_Control remote = Remote_Control(channels);
+  Remote_Control remote = Remote_Control(channels);
+#endif
 
 void setup() {
   #ifdef SERIAL_DEBUG
     Serial.begin(115200);
     Serial.println("Starting...");
   #endif
-  setupChannels();
   #ifdef USE_UIM
 	  uim.Begin();
+  #endif
+  #ifndef IBUS_RECIEVER
+    setupChannels();
   #endif
   setupTimer();
 }
@@ -82,20 +88,24 @@ void loop() {
   // car.SetMode(remote.GetMode());
   car.SetRemote(remote.GetRemote());
 
-  remote.Listen();
-  #if defined(USE_UIM) && defined(DUE_BOARD)
-  uim.HandleEvents(car.GetStats());
-  #endif
-}
 
-void setupChannels() {
-  channels[STEER_IDX].Startup([]{channels[STEER_IDX].ListenInterrupt();});
-  channels[THROTTLE_IDX].Startup([]{channels[THROTTLE_IDX].ListenInterrupt();});
-  channels[ESTOP_IDX].Startup([]{channels[ESTOP_IDX].ListenInterrupt();});
-  channels[MODE_IDX].Startup([]{channels[MODE_IDX].ListenInterrupt();});
-  channels[CH5_IDX].Startup([]{channels[CH5_IDX].ListenInterrupt();});
-  channels[CH6_IDX].Startup([]{channels[CH6_IDX].ListenInterrupt();});
+  #if defined(USE_UIM) && defined(DUE_BOARD)
+    uim.HandleEvents(car.GetStats());
+  #endif
+
+  remote.Listen();
+
 }
+#ifndef IBUS_RECIEVER
+  void setupChannels() {
+    channels[STEER_IDX].Startup([]{channels[STEER_IDX].ListenInterrupt();});
+    channels[THROTTLE_IDX].Startup([]{channels[THROTTLE_IDX].ListenInterrupt();});
+    channels[ESTOP_IDX].Startup([]{channels[ESTOP_IDX].ListenInterrupt();});
+    channels[MODE_IDX].Startup([]{channels[MODE_IDX].ListenInterrupt();});
+    channels[CH5_IDX].Startup([]{channels[CH5_IDX].ListenInterrupt();});
+    channels[CH6_IDX].Startup([]{channels[CH6_IDX].ListenInterrupt();});
+  }
+#endif
 
 void setupTimer() {
   noInterrupts(); // disable all interrupts
@@ -133,7 +143,7 @@ ISR(TIMER5_OVF_vect) // interrupt service routine that wraps a user defined func
 void SerialDebug() {
     Serial.print("Raw Channels: ");
     for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
-      Serial.print(channels[i].Read());
+      Serial.print(remote.Read(i));
       Serial.print(", ");
     }
     Serial.println(" ");

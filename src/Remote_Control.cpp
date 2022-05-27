@@ -1,26 +1,39 @@
 
 #include "Remote_Control.h"
 
-Remote_Control::Remote_Control(Remote_Channel channels[NUM_OF_CHANNELS]) {
-    for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
-        ch[i] = &channels[i];
+#ifdef IBUS_RECIEVER
+
+#else
+   Remote_Control::Remote_Control(Remote_Channel channels[NUM_OF_CHANNELS]) {
+        for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
+            ch[i] = &channels[i];
+        }
     }
+
+    void Remote_Control::Listen() {
+        for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
+            ch[i]->Listen();
+        }
+        // ch[_channelToListen]->Listen();
+        // _channelToListen >= NUM_OF_CHANNELS - 1 ? _channelToListen = 0 : _channelToListen++;
+    }
+#endif
+
+
+Remote_Control::Remote_Control(HardwareSerial &inputSerial) {
+    _iBusInput.begin(inputSerial);
 }
 
 void Remote_Control::Setup() {
-    
+
 }
 
 int16_t Remote_Control::Read(uint8_t index) {
-    return ch[index]->Read();
-}
-    
-void Remote_Control::Listen() {
-    for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
-        ch[i]->Listen();
-    }
-    // ch[_channelToListen]->Listen();
-    // _channelToListen >= NUM_OF_CHANNELS - 1 ? _channelToListen = 0 : _channelToListen++;
+    #ifdef IBUS_RECIEVER
+        return _iBusInput.readChannel(index);
+    #else
+        return ch[index]->Read();
+    #endif
 }
 
 int16_t Remote_Control::mapControlChannel(int16_t rawValue) {
