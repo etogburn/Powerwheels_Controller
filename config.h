@@ -12,6 +12,7 @@
 
 #define IBUS_RECIEVER
 #define IBUS_INPUT Serial1
+#define IBUS_OUTPUT Serial2
 
 //In car Switches
 #define FWD_SWITCH A1

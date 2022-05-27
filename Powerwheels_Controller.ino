@@ -18,7 +18,7 @@ Car car = Car();
 #endif
 
 #ifdef IBUS_RECIEVER
-  Remote_Control remote = Remote_Control(IBUS_INPUT);
+  Remote_Control remote = Remote_Control(IBUS_INPUT, IBUS_OUTPUT);
 #else
   Remote_Channel channels[NUM_OF_CHANNELS] = {
                               Remote_Channel(STEER_PIN),

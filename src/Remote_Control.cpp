@@ -2,10 +2,12 @@
 #include "Remote_Control.h"
 
 #ifdef IBUS_RECIEVER
-    Remote_Control::Remote_Control(HardwareSerial &inputSerial) {
+    Remote_Control::Remote_Control(HardwareSerial &inputSerial, HardwareSerial &outputSerial) {
         #ifdef DUE_BOARD
-            _iBusInput.begin(Serial1, IBUSBM_NOTIMER);
+            _iBusOutput.begin(outputSerial, IBUSBM_NOTIMER);
+            _iBusInput.begin(inputSerial, IBUSBM_NOTIMER);
         #else
+            _iBusOutput.begin(outputSerial);
             _iBusInput.begin(inputSerial);
         #endif
     }

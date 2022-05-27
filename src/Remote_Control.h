@@ -13,7 +13,7 @@
 class Remote_Control  {
 public:
     #ifdef IBUS_RECIEVER
-        Remote_Control(HardwareSerial &inputSerial);
+        Remote_Control(HardwareSerial &inputSerial, HardwareSerial &oututSerial);
     #else
         Remote_Control(Remote_Channel channels[]);
     #endif
@@ -29,6 +29,7 @@ public:
     CarStats GetRemote();
 private:
     #ifdef IBUS_RECIEVER
+        IBusBM _iBusOutput;
         IBusBM _iBusInput;
     #else
         Remote_Channel* ch[NUM_OF_CHANNELS];
