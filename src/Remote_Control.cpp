@@ -2,30 +2,35 @@
 #include "Remote_Control.h"
 
 #ifdef IBUS_RECIEVER
-
+    Remote_Control::Remote_Control(HardwareSerial &inputSerial) {
+        #ifdef DUE_BOARD
+            _iBusInput.begin(Serial1, IBUSBM_NOTIMER);
+        #else
+            _iBusInput.begin(inputSerial);
+        #endif
+    }
 #else
    Remote_Control::Remote_Control(Remote_Channel channels[NUM_OF_CHANNELS]) {
         for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
             ch[i] = &channels[i];
         }
     }
+#endif
 
-    void Remote_Control::Listen() {
+void Remote_Control::Setup() {
+
+}
+
+void Remote_Control::Listen() {
+    #ifdef IBUS_RECIEVER
+        _iBusInput.loop();
+    #else
         for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
             ch[i]->Listen();
         }
         // ch[_channelToListen]->Listen();
         // _channelToListen >= NUM_OF_CHANNELS - 1 ? _channelToListen = 0 : _channelToListen++;
-    }
-#endif
-
-
-Remote_Control::Remote_Control(HardwareSerial &inputSerial) {
-    _iBusInput.begin(inputSerial);
-}
-
-void Remote_Control::Setup() {
-
+    #endif
 }
 
 int16_t Remote_Control::Read(uint8_t index) {

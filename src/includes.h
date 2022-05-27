@@ -5,7 +5,9 @@
 #include "Motor.h"
 
 #include "Remote_Control.h"
-#include "Remote_Channel.h"
+#ifndef IBUS_RECIEVER
+    #include "Remote_Channel.h"
+#endif
 
 #include "Switch.h"
 
