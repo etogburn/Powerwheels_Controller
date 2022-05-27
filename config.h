@@ -2,6 +2,9 @@
 
 #define VERSION "1.0.0"
 
+#define IBUS_RECIEVER
+#define IBUS_INPUT Serial1
+
 //In car Switches
 #define FWD_SWITCH A1
 #define REV_SWITCH A2

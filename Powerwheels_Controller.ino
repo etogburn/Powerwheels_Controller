@@ -11,19 +11,24 @@ UIM_Controller uim ("Powerwheels");
 
 Car car = Car();
 
-Remote_Channel channels[NUM_OF_CHANNELS] = {
-                            Remote_Channel(STEER_PIN),
-                            Remote_Channel(THROTTLE_PIN),
-                            Remote_Channel(ESTOP_PIN, CHANNEL_TIMEOUT_MED),
-                            Remote_Channel(MODE_PIN, CHANNEL_TIMEOUT_MED),
-                            Remote_Channel(CH5_PIN),
-                            Remote_Channel(CH6_PIN)
-                            };
+#ifdef IBUS_RECIEVER
+  Remote_Control remote = Remote_Control(IBUS_INPUT);
+#else
+  Remote_Channel channels[NUM_OF_CHANNELS] = {
+                              Remote_Channel(STEER_PIN),
+                              Remote_Channel(THROTTLE_PIN),
+                              Remote_Channel(ESTOP_PIN, CHANNEL_TIMEOUT_MED),
+                              Remote_Channel(MODE_PIN, CHANNEL_TIMEOUT_MED),
+                              Remote_Channel(CH5_PIN),
+                              Remote_Channel(CH6_PIN)
+                              };
 
-Remote_Control remote = Remote_Control(channels);
-
+  Remote_Control remote = Remote_Control(channels);
+#endif
 void setup() {
-  setupChannels();
+  #ifndef IBUS_RECIEVER
+    setupChannels();
+  #endif
 	uim.Begin();
   setupTimer();
 }
@@ -56,19 +61,21 @@ void loop() {
   car.SetThrottle(remote.GetThrottle());
 
   car.SetSteer(remote.GetSteering());
-
-  remote.Listen();
+  #ifndef IBUS_RECIEVER
+    remote.Listen();
+  #endif
   uim.HandleEvents();
 }
-
-void setupChannels() {
-  channels[STEER_IDX].Startup([]{channels[STEER_IDX].ListenInterrupt();});
-  channels[THROTTLE_IDX].Startup([]{channels[THROTTLE_IDX].ListenInterrupt();});
-  channels[ESTOP_IDX].Startup([]{channels[ESTOP_IDX].ListenInterrupt();});
-  channels[MODE_IDX].Startup([]{channels[MODE_IDX].ListenInterrupt();});
-  channels[CH5_IDX].Startup([]{channels[CH5_IDX].ListenInterrupt();});
-  channels[CH6_IDX].Startup([]{channels[CH6_IDX].ListenInterrupt();});
-}
+#ifndef IBUS_RECIEVER
+  void setupChannels() {
+    channels[STEER_IDX].Startup([]{channels[STEER_IDX].ListenInterrupt();});
+    channels[THROTTLE_IDX].Startup([]{channels[THROTTLE_IDX].ListenInterrupt();});
+    channels[ESTOP_IDX].Startup([]{channels[ESTOP_IDX].ListenInterrupt();});
+    channels[MODE_IDX].Startup([]{channels[MODE_IDX].ListenInterrupt();});
+    channels[CH5_IDX].Startup([]{channels[CH5_IDX].ListenInterrupt();});
+    channels[CH6_IDX].Startup([]{channels[CH6_IDX].ListenInterrupt();});
+  }
+#endif
 
 void setupTimer() {
   noInterrupts(); // disable all interrupts
