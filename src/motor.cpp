@@ -22,14 +22,19 @@ void Motor::Stop() {
 }
 
 void Motor::Run() {
-    if(IsOverTemp()) {
+    if(_overTempFault) {
         Stop();
+        Disable();
     } else if(IsRunning()) {
         _targetSpeed = _setSpeed;
     } else if(!_estopActive && getSpeed() == 0) {
         Disable();
     }
     AccelToSpeed();
+}
+
+void Motor::Calculate() {
+    IsOverTemp();
 }
 
 bool Motor::IsRunning() {
@@ -131,11 +136,11 @@ void Motor::JumpToSpeed() {
 }
 
 void Motor::WriteSpeed() {
-    if(_speed > MAX_FWD) {
-        _speed = MAX_FWD;
-    } else if(_speed <  MAX_REV) {
-        _speed =  -1 * MAX_REV;
-    }
+    // if(_speed > MAX_FWD) {
+    //     _speed = MAX_FWD;
+    // } else if(_speed <  MAX_REV) {
+    //     _speed =  -1 * MAX_REV;
+    // }
 
     if(_speed >= 0) {
         analogWrite(_fwdPin, _speed);

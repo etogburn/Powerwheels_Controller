@@ -9,6 +9,7 @@ class Car {
 public:
     Car();
     void Run();
+    void Calculate();
 
     void SetSteer(int16_t);
     void SetThrottle(int16_t);
@@ -17,7 +18,7 @@ public:
     void SetEStop(bool);
     void SetMode(int8_t);
     void SetSteeringSpeedAdj(int16_t);
-    void SetRemote(CarStats);
+    void SetRemote(Remote);
 
     uint16_t GetRTemp();
     uint16_t GetLTemp();

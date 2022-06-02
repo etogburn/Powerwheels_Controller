@@ -5,9 +5,7 @@
 #include "Motor.h"
 
 #include "Remote_Control.h"
-#ifndef IBUS_RECIEVER
-    #include "Remote_Channel.h"
-#endif
+#include "lib/PPM-reader/src/PPMReader.h"
 
 #include "Switch.h"
 

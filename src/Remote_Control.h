@@ -6,35 +6,23 @@
 #include "../config.h"
 #include "../CarStats.h"
 
-#ifdef IBUS_RECIEVER
-    #include "lib/IBusBM/src/IBusBM.h"
-#endif
-
 class Remote_Control  {
 public:
-    #ifdef IBUS_RECIEVER
-        Remote_Control(HardwareSerial &inputSerial, HardwareSerial &oututSerial);
-    #else
-        Remote_Control(Remote_Channel channels[]);
-    #endif
+    Remote_Control();
     void Setup();
     void Listen();
     int16_t Read(uint8_t);
     int16_t GetThrottle();
     int16_t GetSteering();
-    int16_t GetLKnob();
-    int16_t GetRKnob();
+    int16_t GetChannel4();
+    int16_t GetChannel5();
+    int16_t GetChannel6();
+    int16_t GetChannel7();
     bool GetEStop();
-    int8_t GetMode();
-    CarStats GetRemote();
+    
+    Remote GetRemote();
 private:
-    #ifdef IBUS_RECIEVER
-        IBusBM _iBusOutput;
-        IBusBM _iBusInput;
-    #else
-        Remote_Channel* ch[NUM_OF_CHANNELS];
-        uint8_t _channelToListen = 0;
-    #endif
+    PPMReader _channelsIn = PPMReader(PPM_STREAM_PIN, NUM_OF_CHANNELS);
     int16_t mapControlChannel(int16_t);
     int16_t mapKnobChannel(int16_t);
 };

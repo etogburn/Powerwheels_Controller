@@ -3,16 +3,14 @@
 
 #define VERSION "1.1.2"
 
-#define SERIAL_DEBUG //Unsupported on the Arduino Mega at this time.
+//#define SERIAL_DEBUG //Unsupported on the Arduino Mega at this time.
 #define USE_UIM
 
 #define TIME_SCREEN_CHANGE 5000 //ms between going to a different screen
-#define TIME_LCD_UPDATE 100 //ms between display updates
-#define TIME_BUTTON_READ 10 //ms between button reads
+#define TIME_LCD_UPDATE 150 //ms between display updates
+#define TIME_BUTTON_READ 25 //ms between button reads
 
-#define IBUS_RECIEVER
-#define IBUS_INPUT Serial1
-#define IBUS_OUTPUT Serial2
+#define PPM_STREAM_PIN 19 //must be interrupt pin.
 
 //In car Switches
 #define FWD_SWITCH A1
@@ -54,30 +52,22 @@
 #define STEER_MOTOR_TEMP_PIN A10
 
 //RC Transmitter/Reciever Settings
-#define CHANNEL_TIMEOUT_FAST 20
-#define CHANNEL_TIMEOUT_MED 150
-#define CHANNEL_TIMEOUT_SLOW 1000
-#define NUM_OF_CHANNELS 6
+#define REMOTE_FEEDBACK_PIN 2
 
-#define PULSEIN_TIMEOUT 25000
+#define NUM_OF_CHANNELS 7
+#define END_OF_FRAME_TIME 5000 //microseconds
+
 #define CENTER_PULSE_VALUE 1500
-#define MAX_PULSE_VALUE 2050
-#define MIN_PULSE_VALUE 950
+#define MAX_PULSE_VALUE 2000
+#define MIN_PULSE_VALUE 1000
 
-#define STEER_PIN 2
-#define THROTTLE_PIN 3
-#define ESTOP_PIN 17
-#define MODE_PIN 16
-#define CH5_PIN 19
-#define CH6_PIN 18
-
-#define CENTER_DEADBAND 40 //for throttle/steering counts on either side of the center point
+#define CENTER_DEADBAND 20 //for throttle/steering counts on either side of the center point
 #define DEADBAND_MAX CENTER_PULSE_VALUE + CENTER_DEADBAND
 #define DEADBAND_MIN CENTER_PULSE_VALUE - CENTER_DEADBAND
 
-#define ESTOP_THRESHOLD 1500 //above this is active ~1800. ~1200 is inactive
-#define MODE_SWITCH_LOW_MID 1350
-#define MODE_SWITCH_MID_HIGH 1650
+#define ESTOP_THRESHOLD 1505 //above this is active 
+#define MODE_SWITCH_LOW_MID 1250
+#define MODE_SWITCH_MID_HIGH 1750
 
 #define MODE_HIGH 1
 #define MODE_MED 0
@@ -86,12 +76,13 @@
 #define MIN_KNOB_VAL 0
 #define MAX_KNOB_VAL 1000
 
-#define STEER_IDX 0
-#define THROTTLE_IDX 1
-#define ESTOP_IDX 2
-#define MODE_IDX 3
-#define CH5_IDX 4
-#define CH6_IDX 5
+#define STEER_IDX 1
+#define THROTTLE_IDX 2
+#define ESTOP_IDX 3
+#define CH4_IDX 4
+#define CH5_IDX 5
+#define CH6_IDX 6
+#define CH7_IDX 7
 //End RC Reciever settings
 
 //TIMER settings for motor interrupt thread
@@ -124,5 +115,4 @@
 
 #ifdef __AVR_ATmega2560__ 
   #define MEGA_BOARD
-  #undef SERIAL_DEBUG
 #endif

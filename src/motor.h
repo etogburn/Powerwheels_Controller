@@ -33,6 +33,7 @@ public:
 
     uint16_t GetTemp();
     bool IsOverTemp();
+    void Calculate();
     
 private:
     long _lastThread = 0;

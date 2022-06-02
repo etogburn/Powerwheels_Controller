@@ -1,46 +1,21 @@
 
 #include "Remote_Control.h"
 
-#ifdef IBUS_RECIEVER
-    Remote_Control::Remote_Control(HardwareSerial &inputSerial, HardwareSerial &outputSerial) {
-        #ifdef DUE_BOARD
-            _iBusOutput.begin(outputSerial, IBUSBM_NOTIMER);
-            _iBusInput.begin(inputSerial, IBUSBM_NOTIMER);
-        #else
-            _iBusOutput.begin(outputSerial);
-            _iBusInput.begin(inputSerial);
-        #endif
-    }
-#else
-   Remote_Control::Remote_Control(Remote_Channel channels[NUM_OF_CHANNELS]) {
-        for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
-            ch[i] = &channels[i];
-        }
-    }
-#endif
+Remote_Control::Remote_Control() {
+    
+}
 
 void Remote_Control::Setup() {
 
 }
 
 void Remote_Control::Listen() {
-    #ifdef IBUS_RECIEVER
-        _iBusInput.loop();
-    #else
-        for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
-            ch[i]->Listen();
-        }
-        // ch[_channelToListen]->Listen();
-        // _channelToListen >= NUM_OF_CHANNELS - 1 ? _channelToListen = 0 : _channelToListen++;
-    #endif
+
 }
 
 int16_t Remote_Control::Read(uint8_t index) {
-    #ifdef IBUS_RECIEVER
-        return _iBusInput.readChannel(index);
-    #else
-        return ch[index]->Read();
-    #endif
+    uint16_t channelVal = _channelsIn.rawChannelValue(index);
+    return channelVal == 0 ? CENTER_PULSE_VALUE : channelVal;
 }
 
 int16_t Remote_Control::mapControlChannel(int16_t rawValue) {
@@ -70,32 +45,37 @@ bool Remote_Control::GetEStop() {
     return Read(ESTOP_IDX) > ESTOP_THRESHOLD ? true : false;
 }
 
-int8_t Remote_Control::GetMode() {
-    if(Read(MODE_IDX) > MODE_SWITCH_MID_HIGH) {
+int16_t Remote_Control::GetChannel4() {
+    if(Read(CH4_IDX) > MODE_SWITCH_MID_HIGH) {
         return MODE_HIGH;
-    } else if(Read(MODE_IDX) < MODE_SWITCH_LOW_MID) {
+    } else if(Read(CH4_IDX) < MODE_SWITCH_LOW_MID) {
         return MODE_LOW;
     }
     
     return MODE_MED;
 }
 
-int16_t Remote_Control::GetLKnob() {
+int16_t Remote_Control::GetChannel5() {
     return mapKnobChannel(Read(CH5_IDX));
 }
 
-int16_t Remote_Control::GetRKnob() {
+int16_t Remote_Control::GetChannel6() {
     return mapKnobChannel(Read(CH6_IDX));
 }
 
-CarStats Remote_Control::GetRemote() {
-    CarStats car;
-    car.remoteThrottle = GetThrottle();
-    car.remoteSteer = GetSteering();
-    car.remoteLKnob = GetLKnob();
-    car.remoteRKnob = GetRKnob();
-    car.estop = GetEStop();
-    car.mode = GetMode();
+int16_t Remote_Control::GetChannel7() {
+    return mapKnobChannel(Read(CH7_IDX));
+}
 
-    return car;
+Remote Remote_Control::GetRemote() {
+    Remote remote;
+    remote.throttle = GetThrottle();
+    remote.steer = GetSteering();
+    remote.estop = GetEStop();
+    remote.channel4 = GetChannel4();
+    remote.channel5 = GetChannel5();
+    remote.channel6 = GetChannel6();
+    remote.channel7 = GetChannel7();
+
+    return remote;
 }

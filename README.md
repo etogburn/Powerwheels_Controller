@@ -24,12 +24,11 @@ The remote control overrides happen through a 6 channel transmitter with the fol
 
 ## Recent Additions
 * Thermistors implemented on all motors. Vehicle disabled when motors are over temperature. [Pull Request](https://github.com/etogburn/Powerwheels_Controller/pull/1)
+* Implementation of a PPM signal stream utilizing [PPM-Reader](https://www.arduino.cc/reference/en/libraries/ppm-reader/) library to clean up the channel reading and make it more efficient.
+   * This required a hardware change to a RC reciever that has PPM signal output. See the Hardware section for more details.
 
 
 ## Software to Clean up
-* Remote Channels class 
-   * Reduce the need to setup each interrupt individually in the `setupChannels` method and pass a pointer to the class into Remote Control
-   * A solution involving the Remote Channels consumed purely inside the Remote Control class is preferred.
 * A clean solution for handling and not duplicating the variables required for display on, and modification from the UIM.
    * A likely implementation here will include a class specific for "Screens" or "Menu Items".
 
@@ -38,14 +37,12 @@ The hardware is comprised of the following:
 * [Arduino Mega 2560R3](https://store-usa.arduino.cc/products/arduino-mega-2560-rev3?selectedStore=us)
 * [Arduino Mega Prototype Shield](https://www.adafruit.com/product/192)
 * 3 x [IBT_2 (BTS7960B Motor Drivers)](https://www.amazon.com/HiLetgo-BTS7960-Driver-Arduino-Current/dp/B00WSN98DC/ref=sr_1_3?crid=1VQW8QXXNJXIU&keywords=IBT_2&qid=1652839442&sprefix=ibt_%2Caps%2C373&sr=8-3)
-* [DUMBORC X6F 6 Channel RC Reciever](http://www.dumborc.com/en/2019/10/18/dumborc-x6-2-4g-6ch-transmitter/)
+* [FlySky FS-G7P remote and FS-R7P Reciever](https://www.flysky-cn.com/g7pdescription)
 * [Adafruit I2C RGB LCD Shield with Buttons](https://www.adafruit.com/product/714)
 * [HT-NTC100K 3950 Thermistor](https://www.amazon.com/gp/product/B07F3SMRLJ/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1)
 
 ### Hardware Todo
 * Add potentiometer to the main steering shaft.
-* Replace current RC reciever with a PPM/iBus version like [this](https://www.flysky-cn.com/ia6b-canshu)
-   * This will greatly reduce the overhead required to process the input channels. They operate on 4 external interrupts and 2 pulse measurement functions currently.
 * Add motor current feedback from the motor drivers.
 * Add Hall effect pedal for granular speed control from within the vehicle
 * Create a PCB to neatly pack the components and potentially add further features.

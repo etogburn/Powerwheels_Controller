@@ -21,6 +21,7 @@ void UIM_Controller::HandleEvents(CarStats car) {
 
   if(now > _lastLCDUpdate + TIME_LCD_UPDATE) {
     SetScreen();
+    setBacklight(TEAL);
     _lastLCDUpdate = now;
   }
   
@@ -61,10 +62,10 @@ void UIM_Controller::ReadButtons() {
 void UIM_Controller::ButtonPressed(uint8_t button) {
   switch(button) {
     case BTN_UP:
-      setBacklight(YELLOW);
+      //setBacklight(YELLOW);
       break;
     case BTN_DOWN:
-      setBacklight(RED);
+      //setBacklight(RED);
       break;
     case BTN_LEFT:
       //setBacklight(GREEN);
@@ -94,18 +95,24 @@ void UIM_Controller::SetScreenWelcome() {
 
 void UIM_Controller::SetScreenInCar() {
   home();
-  print("");
-  if(_car.pedal == 0) {
+  if(_car.remote.estop) {
+    print("STOP");
+  } else if(_car.remote.steer != 0 || _car.remote.throttle != 0) {
+    print("Remo");
+  } else if(_car.speed == 0) {
     print("Park");
   } else if(_car.pedal == -1) {
     print("Rev ");
-  } else {
+  } else if(_car.pedal == 1) {
     print("For ");
   }
-  print(" L:");
-  print(_car.motorDriveL.speed);
-  print(" R:");
-  print(_car.motorDriveR.speed);
+  print(" MOT:");
+  if(abs(_car.speed) < 10) {
+    print("  ");
+  } else if(abs(_car.speed) < 100) {
+    print(" ");
+  }
+  print(abs(_car.speed));
   print("         ");
   setCursor(0,1);
   print("L:");
@@ -119,19 +126,21 @@ void UIM_Controller::SetScreenInCar() {
 
 void UIM_Controller::SetScreenRemote() {
   home();
-  print("TH:");
-  print(_car.remoteThrottle);
-  print(" ST:");
-  print(_car.remoteSteer);
+  // print("TH:");
+  // print(_car.remote.throttle);
+  // print(" ST:");
+  // print(_car.remote.steer);
   print(" E:");
-  print(_car.estop);
+  print(_car.remote.estop);
+  print("4:");
+  print(_car.remote.channel4);
+  print(" 5:" );
+  print(_car.remote.channel5);
   print("           ");
   setCursor(0,1);
-  print("M:");
-  print(_car.mode);
-  print(" L:" );
-  print(_car.remoteLKnob);
-  print(" R:");
-  print(_car.remoteRKnob);
+  print(" 6:");
+  print(_car.remote.channel6);
+  print(" 7:");
+  print(_car.remote.channel7);
   print("            ");
 }
