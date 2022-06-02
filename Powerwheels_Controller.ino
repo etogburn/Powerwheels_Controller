@@ -27,7 +27,6 @@ void setup() {
   #ifdef USE_UIM
 	  uim.Begin();
   #endif
-  remote.Setup();
   setupTimer();
 }
 

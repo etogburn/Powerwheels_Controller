@@ -5,14 +5,6 @@ Remote_Control::Remote_Control() {
     
 }
 
-void Remote_Control::Setup() {
-
-}
-
-void Remote_Control::Listen() {
-
-}
-
 int16_t Remote_Control::Read(uint8_t index) {
     uint16_t channelVal = _channelsIn.rawChannelValue(index);
     return channelVal == 0 ? CENTER_PULSE_VALUE : channelVal;
@@ -31,6 +23,10 @@ int16_t Remote_Control::mapControlChannel(int16_t rawValue) {
 int16_t Remote_Control::mapKnobChannel(int16_t rawValue) {
     int16_t output = map(rawValue, MIN_PULSE_VALUE, MAX_PULSE_VALUE, MIN_KNOB_VAL, MAX_KNOB_VAL);
      return constrain(output, MIN_KNOB_VAL, MAX_KNOB_VAL);
+}
+
+int16_t Remote_Control::mapModeChannel(int16_t rawValue, int8_t numOfModes) {
+    
 }
 
 int16_t Remote_Control::GetThrottle() {

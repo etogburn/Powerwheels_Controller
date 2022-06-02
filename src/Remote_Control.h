@@ -9,8 +9,6 @@
 class Remote_Control  {
 public:
     Remote_Control();
-    void Setup();
-    void Listen();
     int16_t Read(uint8_t);
     int16_t GetThrottle();
     int16_t GetSteering();
