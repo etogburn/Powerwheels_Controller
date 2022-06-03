@@ -22,6 +22,7 @@ public:
 
     uint16_t GetRTemp();
     uint16_t GetLTemp();
+    uint16_t GetTemp();
     bool IsOverTemp();
 
     CarStats GetStats();
@@ -34,7 +35,6 @@ private:
     int32_t AdjustSpeedForSteering(int16_t, int16_t);
     bool RemoteOverride(int16_t);
     void SetSpeed(int16_t, int16_t);
-    uint16_t GetTemp();
     int16_t GetSpeed();
     
     bool _lastEStop = false;

@@ -12,11 +12,10 @@ public:
     int16_t Read(uint8_t);
     int16_t GetThrottle();
     int16_t GetSteering();
-    int16_t GetChannel4();
-    int16_t GetChannel5();
-    int16_t GetChannel6();
-    int16_t GetChannel7();
+    int16_t GetChannel(uint8_t);
     bool GetEStop();
+    bool IsAvailable();
+    void SetFeedbackVal(int16_t);
     
     Remote GetRemote();
 private:

@@ -25,11 +25,37 @@
 #define BTN_RIGHT 3
 #define BTN_SELECT 4
 
-#define NUM_OF_SCREENS 2 //1 based index. does not include the welcome screen.
+#define NUM_OF_SCREENS 3 //1 based index. does not include the welcome screen.
 
-class UIM_Controller : public Adafruit_RGBLCDShield {
+//custom Characters
+#define FWD_ARROW (byte)0
+#define BACK_ARROW (byte)1
+
+const byte PROGMEM fwdArrow[8]  {
+	0b00100,
+	0b01110,
+	0b10101,
+	0b00100,
+	0b00100,
+	0b00100,
+	0b00100,
+	0b00100
+};
+
+const byte PROGMEM backArrow[8] = {
+	0b00100,
+	0b00100,
+	0b00100,
+	0b00100,
+	0b00100,
+	0b10101,
+	0b01110,
+	0b00100
+};
+
+class UIM_Controller : private Adafruit_RGBLCDShield {
 public:
-  UIM_Controller(String _startMsg = "");
+  UIM_Controller();
 
   // @brief setups and starts the display with the welcome message.
   void Begin();
@@ -38,28 +64,29 @@ public:
   void HandleEvents(CarStats car);
   
 private:
-  String _startMessage = "";
-
   long _lastScreenChange = 0;
   long _lastLCDUpdate = 0;
   long _lastButtonRead = 0;
 
   uint8_t _screenCount = 0;
-  bool _scrollScreens = true;
+  bool _scrollScreens = false;
   bool _bootScreen = true;
 
   CarStats _car;
 
+  void PrintVal(int16_t, uint8_t, bool hasSign = false);
+
   void SetScreen();
   void SetScreenWelcome();
-  void SetScreenInCar();
-  void SetScreenRemote();
+  void SetScreenTemps(bool);
+  void SetScreenRemoteMain(bool);
+  void SetScreenRemoteAux(bool);
+  void SetScreenMainBanner(uint8_t);
 
+  void BacklightController();
   void ReadButtons();
 
   void ButtonPressed(uint8_t);
-  
-  bool IsPressed(uint8_t, uint8_t);
   
   Button_Controller Btn[BTN_NUMBER] = {
                                         Button_Controller(BUTTON_UP), 

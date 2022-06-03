@@ -14,50 +14,27 @@
 Car car = Car();
 
 #ifdef USE_UIM
-  UIM_Controller uim ("Powerwheels");
+  UIM_Controller uim = UIM_Controller();
 #endif
 
 Remote_Control remote = Remote_Control();
 
 void setup() {
-  #ifdef SERIAL_DEBUG
-    Serial.begin(115200);
-    Serial.println("Starting...");
-  #endif
   #ifdef USE_UIM
 	  uim.Begin();
   #endif
   setupTimer();
 }
 
-long now;
-long lastRun = 0;
-
-
 // the loop function runs over and over again until power down or reset
 void loop() {
-  now = millis();
-  #ifdef SERIAL_DEBUG
-  
-  if(now > lastRun + 500) {
-    SerialDebug();
-    lastRun = now;
-  }
-  #endif
-
-//  if(remote.GetChannel4() == MODE_MED) {
-    //car.SetSteeringSpeedAdj(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, STEERING_SPEED_ADJUST_MIN, STEERING_SPEED_ADJUST_MAX));
-  // } else {
-    car.SetAcceleration(map(remote.GetChannel7(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
-    car.SetMaxSpeed(map(remote.GetChannel5(), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
-  // }
-
-  car.SetRemote(remote.GetRemote());
-
+  car.SetAcceleration(map(remote.GetChannel(CH7_IDX), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
+  car.SetMaxSpeed(map(remote.GetChannel(CH5_IDX), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
+  remote.SetFeedbackVal(car.GetTemp()/2);
+  car.Calculate();
   #if defined(USE_UIM)
     uim.HandleEvents(car.GetStats());
   #endif
-  car.Calculate();
 }
 
 void setupTimer() {
@@ -79,6 +56,7 @@ void setupTimer() {
 }
 
 void Threads() {
+  car.SetRemote(remote.GetRemote());
   car.Run();
 }
 
@@ -89,34 +67,5 @@ ISR(TIMER5_OVF_vect) // interrupt service routine that wraps a user defined func
   Threads();
   TCNT5 = TIMER_PRELOAD;  // preload timer
   //interrupts();
-}
-#endif
-
-#ifdef SERIAL_DEBUG
-void SerialDebug() {
-    Serial.print("Raw Channels: ");
-    for(uint8_t i = 0; i < NUM_OF_CHANNELS; i++) {
-      Serial.print(remote.Read(i));
-      Serial.print(", ");
-    }
-    Serial.println(" ");
-    // Serial.print("Estop = ");
-    // Serial.print(car.GetStats().estop);
-    // Serial.print(", Mode = ");
-    // Serial.print(car.GetStats().mode);
-    // Serial.print(", Ped = ");
-    // Serial.println(car.GetStats().pedal);
-    // Serial.print("Left Motor= ");
-    // Serial.print(car.GetStats().motorDriveL.speed);
-    // Serial.print(", ");
-    // Serial.println(car.GetStats().motorDriveL.temp);
-    // Serial.print("Right Motor= ");
-    // Serial.print(car.GetStats().motorDriveR.speed);
-    // Serial.print(", ");
-    // Serial.println(car.GetStats().motorDriveR.temp);
-    // Serial.print("Steer Motor= ");
-    // Serial.print(car.GetStats().motorDriveR.speed);
-    // Serial.print(", ");
-    // Serial.println(car.GetStats().motorDriveR.temp);
 }
 #endif

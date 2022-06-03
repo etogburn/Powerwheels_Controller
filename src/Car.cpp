@@ -19,7 +19,7 @@ void Car::Run() {
         if(RemoteOverride(_car.remote.throttle)) {
             int16_t steerVal = 0;
             Start();
-            if(_car.remote.channel4== MODE_HIGH) {
+            if(_car.mode== MODE_HIGH) {
                 steerVal = _car.remote.steer;
             } 
 
@@ -184,6 +184,12 @@ void Car::SetThrottle(int16_t throttle) {
     _car.remote.throttle = throttle;
 }
 
-void Car::SetMode(int8_t mode) {
-    _car.remote.channel4 = mode;
+void Car::SetMode(int8_t input) {
+    if(input > MODE_SWITCH_MID_HIGH) {
+        _car.mode = MODE_HIGH;
+    } else if(input < MODE_SWITCH_LOW_MID) {
+        _car.mode = MODE_LOW;
+    } else {
+        _car.mode = MODE_MED;
+    }
 }

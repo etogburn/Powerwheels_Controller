@@ -2,6 +2,7 @@
 #include <Arduino.h>
 
 #define VERSION "1.1.2"
+#define START_MESSAGE "Powerwheels"
 
 //#define SERIAL_DEBUG //Unsupported on the Arduino Mega at this time.
 #define USE_UIM
@@ -55,7 +56,8 @@
 #define REMOTE_FEEDBACK_PIN 2
 
 #define NUM_OF_CHANNELS 7
-#define END_OF_FRAME_TIME 5000 //microseconds
+#define MAX_FEEDBACK_VOLTAGE 48 //4.8v
+#define MIN_FEEDBACK_VOLTAGE 0 //0v
 
 #define CENTER_PULSE_VALUE 1500
 #define MAX_PULSE_VALUE 2000
@@ -66,8 +68,9 @@
 #define DEADBAND_MIN CENTER_PULSE_VALUE - CENTER_DEADBAND
 
 #define ESTOP_THRESHOLD 1505 //above this is active 
-#define MODE_SWITCH_LOW_MID 1250
-#define MODE_SWITCH_MID_HIGH 1750
+#define ESTOP_RESET_TIME 1000 //ms - time required to read low on the estop in order to reset it
+#define MODE_SWITCH_LOW_MID 250
+#define MODE_SWITCH_MID_HIGH 750
 
 #define MODE_HIGH 1
 #define MODE_MED 0

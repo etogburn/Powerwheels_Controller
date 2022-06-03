@@ -25,6 +25,7 @@ struct CarStats {
   MotorStats motorSteer;
 
   Remote remote;
+  int16_t mode = 0;
   int16_t speed = 0;
   uint16_t maxSpeed = PWM_MAX;
   int16_t acceleration = ACCEL_DEFAULT;

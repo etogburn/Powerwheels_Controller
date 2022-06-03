@@ -2,7 +2,18 @@
 #include "Remote_Control.h"
 
 Remote_Control::Remote_Control() {
-    
+    pinMode(REMOTE_FEEDBACK_PIN, OUTPUT);
+    SetFeedbackVal(0);
+}
+
+void Remote_Control::SetFeedbackVal(int16_t val) {
+    if(val >= MIN_FEEDBACK_VOLTAGE && val <= MAX_FEEDBACK_VOLTAGE) {
+        analogWrite(REMOTE_FEEDBACK_PIN, (val*255+MAX_FEEDBACK_VOLTAGE/2)/MAX_FEEDBACK_VOLTAGE);
+    }
+}
+
+bool Remote_Control::IsAvailable() {
+    return true;
 }
 
 int16_t Remote_Control::Read(uint8_t index) {
@@ -25,10 +36,6 @@ int16_t Remote_Control::mapKnobChannel(int16_t rawValue) {
      return constrain(output, MIN_KNOB_VAL, MAX_KNOB_VAL);
 }
 
-int16_t Remote_Control::mapModeChannel(int16_t rawValue, int8_t numOfModes) {
-    
-}
-
 int16_t Remote_Control::GetThrottle() {
     return mapControlChannel(Read(THROTTLE_IDX));
 }
@@ -38,29 +45,32 @@ int16_t Remote_Control::GetSteering() {
 }
 
 bool Remote_Control::GetEStop() {
-    return Read(ESTOP_IDX) > ESTOP_THRESHOLD ? true : false;
-}
+    static bool estopActive;
+    static unsigned long lastTimeActive;
+    static bool readyForReset;
 
-int16_t Remote_Control::GetChannel4() {
-    if(Read(CH4_IDX) > MODE_SWITCH_MID_HIGH) {
-        return MODE_HIGH;
-    } else if(Read(CH4_IDX) < MODE_SWITCH_LOW_MID) {
-        return MODE_LOW;
+    unsigned long now = millis();
+    bool estopVal = Read(ESTOP_IDX) > ESTOP_THRESHOLD ? true : false;
+
+    if(!estopVal && estopActive && 
+        now - lastTimeActive > ESTOP_RESET_TIME) {
+        readyForReset = true;
+    } else if(estopVal && estopActive && readyForReset) {
+        estopActive = false;
+    } else if(estopVal && !estopActive) {
+        estopActive = true;
     }
-    
-    return MODE_MED;
+
+    if(estopVal) {
+        lastTimeActive = now;
+        readyForReset = false;
+    }
+
+    return estopActive;
 }
 
-int16_t Remote_Control::GetChannel5() {
-    return mapKnobChannel(Read(CH5_IDX));
-}
-
-int16_t Remote_Control::GetChannel6() {
-    return mapKnobChannel(Read(CH6_IDX));
-}
-
-int16_t Remote_Control::GetChannel7() {
-    return mapKnobChannel(Read(CH7_IDX));
+int16_t Remote_Control::GetChannel(uint8_t channel) {
+    return channel <= NUM_OF_CHANNELS ? mapKnobChannel(Read(channel)) : -1;
 }
 
 Remote Remote_Control::GetRemote() {
@@ -68,10 +78,10 @@ Remote Remote_Control::GetRemote() {
     remote.throttle = GetThrottle();
     remote.steer = GetSteering();
     remote.estop = GetEStop();
-    remote.channel4 = GetChannel4();
-    remote.channel5 = GetChannel5();
-    remote.channel6 = GetChannel6();
-    remote.channel7 = GetChannel7();
+    remote.channel4 = GetChannel(CH4_IDX);
+    remote.channel5 = GetChannel(CH5_IDX);
+    remote.channel6 = GetChannel(CH6_IDX);
+    remote.channel7 = GetChannel(CH7_IDX);
 
     return remote;
 }
