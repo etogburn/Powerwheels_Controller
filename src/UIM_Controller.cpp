@@ -1,21 +1,26 @@
 #include "UIM_Controller.h"
 
+
 UIM_Controller::UIM_Controller() {
 };
 
 void UIM_Controller::Begin() {
-  createChar(FWD_ARROW, fwdArrow);
-  createChar(BACK_ARROW, backArrow);
   begin(16, 2);
   clear();
+  createChar(FWD_ARROW, fwdArrow);
+  createChar(BACK_ARROW, backArrow);
 }
 
 void UIM_Controller::HandleEvents(CarStats car) {
   _car = car;
   long now = millis();
 
-  if(_scrollScreens && now > _lastScreenChange + TIME_SCREEN_CHANGE) {
-    _screenCount++;
+  if(now > _lastScreenChange + TIME_SCREEN_CHANGE) {
+    if(_bootScreen && _screenCount == 0) {
+      _bootScreen = false;
+    } else {
+      _scrollScreens ? _screenCount++ : 0;
+    }
     _lastScreenChange = now;
     // clear();
   }
@@ -34,12 +39,12 @@ void UIM_Controller::HandleEvents(CarStats car) {
 }
 
 void UIM_Controller::SetScreen() {
-  static uint8_t lastScreenCount;
+  static int16_t lastScreenCount;
   bool writeStaticText = (_screenCount != lastScreenCount);
   if(_screenCount < 1 && _bootScreen) {
     SetScreenWelcome();
+    lastScreenCount = -1;
   } else {
-    _bootScreen = false;
     switch(_screenCount % NUM_OF_SCREENS) {
     case 0:
       SetScreenTemps(writeStaticText);
@@ -51,9 +56,8 @@ void UIM_Controller::SetScreen() {
       SetScreenRemoteAux(writeStaticText);
       break;
     }
+    lastScreenCount = _screenCount;
   }
-
-  lastScreenCount = _screenCount;
 }
 
 void UIM_Controller::BacklightController() {
@@ -70,6 +74,7 @@ void UIM_Controller::ReadButtons() {
   for(uint8_t i = 0; i < BTN_NUMBER; i++) {
     if (Btn[i].IsPressed(buttons)) {
       ButtonPressed(i);
+      delay(250);
     }
   }
 }
@@ -99,6 +104,7 @@ void UIM_Controller::ButtonPressed(uint8_t button) {
     default:
       break;
   }
+  
 }
 
 void UIM_Controller::SetScreenWelcome() {
@@ -111,7 +117,7 @@ void UIM_Controller::SetScreenWelcome() {
 void UIM_Controller::SetScreenTemps(bool writeStaticText) {
   if(writeStaticText) {
     setCursor(0,1);
-    print("L:00 R:00 S:00  ");
+    print("L:   R:   S:    ");
   }
 
   SetScreenMainBanner(0);
@@ -127,9 +133,9 @@ void UIM_Controller::SetScreenTemps(bool writeStaticText) {
 void UIM_Controller::SetScreenRemoteAux(bool writeStaticText) {
   if(writeStaticText) {
     home();
-    print("4:____ 5:____    ");
+    print("4:     5:        ");
     setCursor(0,1);
-    print("6:____ 7:____     ");
+    print("6:     7:         ");
   }
   setCursor(2,0);
   PrintVal(_car.remote.channel4, 4);
@@ -144,14 +150,14 @@ void UIM_Controller::SetScreenRemoteAux(bool writeStaticText) {
 void UIM_Controller::SetScreenRemoteMain(bool writeStaticText) {
   if(writeStaticText) {
     home();
-    print("TH:____ ST:____    ");
+    print("TH:     ST:        ");
     setCursor(0,1);
-    print("EStop: ________  ");
+    print("EStop:           ");
   }
   setCursor(3,0);
-  PrintVal(_car.remote.channel4, 4, true);
+  PrintVal(_car.remote.throttle, 4, true);
   setCursor(10,0);
-  PrintVal(_car.remote.channel5, 4, true);
+  PrintVal(_car.remote.steer, 4, true);
   
   setCursor(6,1);
   if(_car.remote.estop) {
@@ -167,7 +173,7 @@ void UIM_Controller::PrintVal(int16_t val, uint8_t maxDigits, bool hasSign) {
 
   val < 0 || hasSign ? valDigits++ : 0;
 
-  while(tempVal > 10) {
+  while(tempVal >= 10) {
     tempVal/=10;
     valDigits++;
   }
@@ -217,7 +223,9 @@ void UIM_Controller::SetScreenMainBanner(uint8_t row) {
       write(FWD_ARROW);
       print(" Mot:");
     }
+    setCursor(11,row);
+    PrintVal(abs(_car.speed), 3);
+    print("  ");
   }
-  setCursor(13,row);
-  PrintVal(abs(_car.speed), 3);
+  
 }

@@ -60,6 +60,7 @@ void Car::Go() {
 void Car::Brake() {
     _driveMotorR.EStop();
     _driveMotorL.EStop();
+    _steerMotor.Stop();
 }
 
 bool Car::RemoteOverride(int16_t input) {
@@ -77,6 +78,7 @@ void Car::Stop() {
     SetSpeed(0, 0);
     _driveMotorR.Stop();
     _driveMotorL.Stop();
+    _steerMotor.Stop();
 }
 
 void Car::Start() {

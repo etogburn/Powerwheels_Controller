@@ -68,7 +68,7 @@
 #define DEADBAND_MIN CENTER_PULSE_VALUE - CENTER_DEADBAND
 
 #define ESTOP_THRESHOLD 1505 //above this is active 
-#define ESTOP_RESET_TIME 1000 //ms - time required to read low on the estop in order to reset it
+#define ESTOP_RESET_TIME 250 //ms - time required to read low on the estop in order to reset it
 #define MODE_SWITCH_LOW_MID 250
 #define MODE_SWITCH_MID_HIGH 750
 
@@ -87,7 +87,6 @@
 #define CH6_IDX 6
 #define CH7_IDX 7
 //End RC Reciever settings
-
 //TIMER settings for motor interrupt thread
 #define TIMER_PRESCALE 64
 #define TIMER_PRELOAD 65536 - 16000000/TIMER_PRESCALE/(1000/MOTOR_THREAD) // preload timer 65536-16MHz/8/100Hz. 20000 timer counts.

@@ -301,7 +301,7 @@ void Adafruit_RGBLCDShield::noAutoscroll(void) {
 
 // Allows us to fill the first 8 CGRAM locations
 // with custom characters
-void Adafruit_RGBLCDShield::createChar(uint8_t location, const uint8_t charmap[]) {
+void Adafruit_RGBLCDShield::createChar(uint8_t location, uint8_t charmap[]) {
   location &= 0x7; // we only have 8 locations 0-7
   command(LCD_SETCGRAMADDR | (location << 3));
   for (int i = 0; i < 8; i++) {

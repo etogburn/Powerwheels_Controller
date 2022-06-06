@@ -31,28 +31,6 @@
 #define FWD_ARROW (byte)0
 #define BACK_ARROW (byte)1
 
-const byte PROGMEM fwdArrow[8]  {
-	0b00100,
-	0b01110,
-	0b10101,
-	0b00100,
-	0b00100,
-	0b00100,
-	0b00100,
-	0b00100
-};
-
-const byte PROGMEM backArrow[8] = {
-	0b00100,
-	0b00100,
-	0b00100,
-	0b00100,
-	0b00100,
-	0b10101,
-	0b01110,
-	0b00100
-};
-
 class UIM_Controller : private Adafruit_RGBLCDShield {
 public:
   UIM_Controller();
@@ -95,6 +73,28 @@ private:
                                         Button_Controller(BUTTON_RIGHT), 
                                         Button_Controller(BUTTON_SELECT)
                                       };
+  //custom characters
+  byte fwdArrow[8]  {
+    0b00100,
+    0b01110,
+    0b10101,
+    0b00100,
+    0b00100,
+    0b00100,
+    0b00100,
+    0b00100
+  };
+
+  byte backArrow[8] = {
+    0b00100,
+    0b00100,
+    0b00100,
+    0b00100,
+    0b00100,
+    0b10101,
+    0b01110,
+    0b00100
+  };
 };
 
 #endif

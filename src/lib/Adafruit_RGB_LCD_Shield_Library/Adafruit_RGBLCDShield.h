@@ -166,7 +166,7 @@ public:
    * @param location Location in cgram to fill
    * @param charmap[] Character map to use
    */
-  void createChar(uint8_t, const uint8_t[]);
+  void createChar(uint8_t, uint8_t[]);
   /*!
    * @brief High-level command that sets the location of the cursor
    * @param col Column to put the cursor in

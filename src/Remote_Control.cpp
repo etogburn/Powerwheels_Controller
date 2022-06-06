@@ -52,15 +52,16 @@ bool Remote_Control::GetEStop() {
     unsigned long now = millis();
     bool estopVal = Read(ESTOP_IDX) > ESTOP_THRESHOLD ? true : false;
 
-    if(!estopVal && estopActive && 
-        now - lastTimeActive > ESTOP_RESET_TIME) {
-        readyForReset = true;
-    } else if(estopVal && estopActive && readyForReset) {
-        estopActive = false;
-    } else if(estopVal && !estopActive) {
-        estopActive = true;
+    if(now-lastTimeActive > ESTOP_RESET_TIME) {
+        if(!estopVal && estopActive) {
+            readyForReset = true;
+        } else if(estopVal && estopActive && readyForReset) {
+            estopActive = false;
+        } else if(estopVal && !estopActive) {
+            estopActive = true;
+        }
     }
-
+    
     if(estopVal) {
         lastTimeActive = now;
         readyForReset = false;
