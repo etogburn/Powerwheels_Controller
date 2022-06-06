@@ -28,8 +28,42 @@
 #define NUM_OF_SCREENS 3 //1 based index. does not include the welcome screen.
 
 //custom Characters
-#define FWD_ARROW (byte)0
-#define BACK_ARROW (byte)1
+#define FWD_ARROW_CHAR (byte)0
+#define BACK_ARROW_CHAR (byte)0
+#define DEGREE_CHAR (byte)1
+//custom characters
+ const uint8_t PROGMEM fwdArrowChar[8]  {
+    B00000,
+    B00100,
+    B01110,
+    B10101,
+    B00100,
+    B00100,
+    B00100,
+    B00000
+  };
+
+const uint8_t PROGMEM backArrowChar[8] = {
+    B00000,
+    B00100,
+    B00100,
+    B00100,
+    B10101,
+    B01110,
+    B00100,
+    B00000
+  };
+
+  const uint8_t PROGMEM degreeChar[8] = {
+    B01100,
+    B10010,
+    B10010,
+    B01100,
+    B00000,
+    B00000,
+    B00000,
+    B00000
+  };
 
 class UIM_Controller : private Adafruit_RGBLCDShield {
 public:
@@ -73,28 +107,6 @@ private:
                                         Button_Controller(BUTTON_RIGHT), 
                                         Button_Controller(BUTTON_SELECT)
                                       };
-  //custom characters
-  byte fwdArrow[8]  {
-    0b00100,
-    0b01110,
-    0b10101,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b00100
-  };
-
-  byte backArrow[8] = {
-    0b00100,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b10101,
-    0b01110,
-    0b00100
-  };
 };
 
 #endif

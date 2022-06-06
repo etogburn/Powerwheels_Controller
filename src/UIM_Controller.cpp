@@ -7,8 +7,6 @@ UIM_Controller::UIM_Controller() {
 void UIM_Controller::Begin() {
   begin(16, 2);
   clear();
-  createChar(FWD_ARROW, fwdArrow);
-  createChar(BACK_ARROW, backArrow);
 }
 
 void UIM_Controller::HandleEvents(CarStats car) {
@@ -35,7 +33,6 @@ void UIM_Controller::HandleEvents(CarStats car) {
     ReadButtons();
     _lastButtonRead = now;
   }
-  
 }
 
 void UIM_Controller::SetScreen() {
@@ -104,7 +101,6 @@ void UIM_Controller::ButtonPressed(uint8_t button) {
     default:
       break;
   }
-  
 }
 
 void UIM_Controller::SetScreenWelcome() {
@@ -116,17 +112,24 @@ void UIM_Controller::SetScreenWelcome() {
 
 void UIM_Controller::SetScreenTemps(bool writeStaticText) {
   if(writeStaticText) {
+    createChar_progmem(DEGREE_CHAR, degreeChar);
     setCursor(0,1);
-    print("L:   R:   S:    ");
+    print("L:  ");
+    write(DEGREE_CHAR);
+    print(" R:  ");
+    write(DEGREE_CHAR);
+    print(" S:  ");
+    write(DEGREE_CHAR);
+    print("  ");
   }
 
   SetScreenMainBanner(0);
 
   setCursor(2,1);
   print(_car.motorDriveL.temp);
-  setCursor(7,1);
+  setCursor(8,1);
   print(_car.motorDriveR.temp);
-  setCursor(12,1);
+  setCursor(14,1);
   print(_car.motorSteer.temp);
 }
 
@@ -213,14 +216,16 @@ void UIM_Controller::SetScreenMainBanner(uint8_t row) {
     } else if(_car.speed == 0) {
       print("Park   Mot:");
     } else if(_car.pedal == -1) {
+      createChar_progmem(BACK_ARROW_CHAR, backArrowChar);
       print("Rev ");
-      write(BACK_ARROW);
-      write(BACK_ARROW);
+      write(BACK_ARROW_CHAR);
+      write(BACK_ARROW_CHAR);
       print(" Mot:");
     } else if(_car.pedal == 1) {
+      createChar_progmem(FWD_ARROW_CHAR, fwdArrowChar);
       print("For ");
-      write(FWD_ARROW);
-      write(FWD_ARROW);
+      write(FWD_ARROW_CHAR);
+      write(FWD_ARROW_CHAR);
       print(" Mot:");
     }
     setCursor(11,row);

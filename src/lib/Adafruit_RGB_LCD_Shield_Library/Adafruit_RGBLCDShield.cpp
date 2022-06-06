@@ -310,6 +310,15 @@ void Adafruit_RGBLCDShield::createChar(uint8_t location, uint8_t charmap[]) {
   command(LCD_SETDDRAMADDR); // unfortunately resets the location to 0,0
 }
 
+void Adafruit_RGBLCDShield::createChar_progmem(uint8_t location, const uint8_t *charmap) {
+  location &= 0x7; // we only have 8 locations 0-7
+  command(LCD_SETCGRAMADDR | (location << 3));
+  for (int i = 0; i < 8; i++) {
+    write(pgm_read_byte(charmap + i));
+  }
+  command(LCD_SETDDRAMADDR); // unfortunately resets the location to 0,0
+}
+
 /*********** mid level commands, for sending data/cmds */
 
 inline void Adafruit_RGBLCDShield::command(uint8_t value) { send(value, LOW); }
