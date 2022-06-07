@@ -1,7 +1,7 @@
 #include "Car.h"
 
 Car::Car() {
-    _steerMotor.setAcceleration(FASTEST_ACCEL);
+    
 }
 
 void Car::Run() {
@@ -28,7 +28,7 @@ void Car::Run() {
 
         if(RemoteOverride(_car.remote.steer)) {
             _steerMotor.Start();
-            _steerMotor.setSpeed(_car.remote.steer);
+            _steerMotor.SetPosition(_car.remote.steer);
             
         } else {
             _steerMotor.Stop();

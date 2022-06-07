@@ -17,7 +17,7 @@ public:
     bool IsRunning();    
 
     // @brief Must be called on a recurring basis to ensure the motor values change appropriately.
-    void Run();
+    virtual void Run();
     // @brief set's the speed between FWD_MAX and REV_MAX (reverse is negative, forward is positive)
     void setSpeed(int16_t);
     // @brief returns the current speed. negative is reverse. forward is positive.
@@ -33,7 +33,7 @@ public:
 
     uint16_t GetTemp();
     bool IsOverTemp();
-    void Calculate();
+    virtual void Calculate();
     
 private:
     long _lastThread = 0;

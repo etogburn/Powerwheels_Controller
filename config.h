@@ -51,6 +51,7 @@
 #define STEER_MOTOR_FWD_PIN 6
 #define STEER_MOTOR_REV_PIN 5
 #define STEER_MOTOR_TEMP_PIN A10
+#define STEER_FEEDBACK_PIN A7
 
 //RC Transmitter/Reciever Settings
 #define REMOTE_FEEDBACK_PIN 2

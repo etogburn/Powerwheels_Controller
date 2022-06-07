@@ -2,6 +2,7 @@
 #include "Button_Controller.h"
 #include "UIM_Controller.h"
 
+#include "Position_Motor.h"
 #include "Motor.h"
 
 #include "Remote_Control.h"
