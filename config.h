@@ -4,7 +4,7 @@
 #define VERSION "1.1.2"
 #define START_MESSAGE "Powerwheels"
 
-//#define SERIAL_DEBUG //Unsupported on the Arduino Mega at this time.
+#define MEGA_BOARD
 #define USE_UIM
 
 #define TIME_SCREEN_CHANGE 5000 //ms between going to a different screen
@@ -112,10 +112,6 @@
   #error MotorThread is too short.
 #endif
 
-#ifdef __SAM3X8E__
-  #define DUE_BOARD
-#endif
-
-#ifdef __AVR_ATmega2560__ 
-  #define MEGA_BOARD
-#endif
+// #ifdef __AVR_ATmega2560__ 
+//   #define MEGA_BOARD
+// #endif

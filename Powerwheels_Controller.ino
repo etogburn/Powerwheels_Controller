@@ -7,10 +7,6 @@
 #include "config.h"
 #include "src/includes.h"
 
-#ifdef DUE_BOARD
-  #include <DueTimer.h>
-#endif
-
 Car car = Car();
 
 #ifdef USE_UIM
@@ -20,6 +16,9 @@ Car car = Car();
 Remote_Control remote = Remote_Control();
 
 void setup() {
+  #ifdef MEGA_BOARD
+    speedUpAnalogReads();
+  #endif
   #ifdef USE_UIM
 	  uim.Begin();
   #endif
@@ -32,10 +31,27 @@ void loop() {
   car.SetMaxSpeed(map(remote.GetChannel(CH5_IDX), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
   remote.SetFeedbackVal(car.GetTemp()/2);
   car.Calculate();
-  #if defined(USE_UIM)
+  #ifdef USE_UIM
     uim.HandleEvents(car.GetStats());
   #endif
 }
+
+#ifdef MEGA_BOARD
+void speedUpAnalogReads() {
+  // defines for setting and clearing register bits
+#ifndef cbi
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
+#ifndef sbi
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#endif
+
+  // set prescale to 16
+  sbi(ADCSRA,ADPS2) ;
+  cbi(ADCSRA,ADPS1) ;
+  cbi(ADCSRA,ADPS0) ;
+}
+#endif
 
 void setupTimer() {
   noInterrupts(); // disable all interrupts
@@ -46,11 +62,6 @@ void setupTimer() {
   TCNT5 = TIMER_PRELOAD; 
   TCCR5B |= TIMER_PRESCALER;    
   TIMSK5 |= (1 << TOIE5); // enable timer overflow interrupt
-#endif
-
-#ifdef DUE_BOARD
-  Timer5.attachInterrupt(Threads);
-	Timer5.start(MOTOR_THREAD*1000); //*1000 converts to microseconds
 #endif
   interrupts(); // enable all interrupts
 }
