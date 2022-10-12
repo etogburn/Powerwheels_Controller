@@ -5,6 +5,7 @@
 #define START_MESSAGE "Powerwheels"
 
 #define MEGA_BOARD
+
 #define USE_UIM
 
 #define TIME_SCREEN_CHANGE 5000 //ms between going to a different screen

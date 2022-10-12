@@ -18,6 +18,7 @@ public:
 
     // @brief Must be called on a recurring basis to ensure the motor values change appropriately.
     virtual void Run();
+
     // @brief set's the speed between FWD_MAX and REV_MAX (reverse is negative, forward is positive)
     void setSpeed(int16_t);
     // @brief returns the current speed. negative is reverse. forward is positive.

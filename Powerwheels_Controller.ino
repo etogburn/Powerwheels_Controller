@@ -19,6 +19,7 @@ void setup() {
   #ifdef MEGA_BOARD
     speedUpAnalogReads();
   #endif
+
   #ifdef USE_UIM
 	  uim.Begin();
   #endif
