@@ -7,84 +7,65 @@
 #include "config.h"
 #include "src/includes.h"
 
-UIM_Controller uim ("Powerwheels");
+#ifdef DUE_BOARD
+  #include <DueTimer.h>
+#endif
 
 Car car = Car();
 
-Remote_Channel channels[NUM_OF_CHANNELS] = {
-                            Remote_Channel(STEER_PIN),
-                            Remote_Channel(THROTTLE_PIN),
-                            Remote_Channel(ESTOP_PIN, CHANNEL_TIMEOUT_MED),
-                            Remote_Channel(MODE_PIN, CHANNEL_TIMEOUT_MED),
-                            Remote_Channel(CH5_PIN),
-                            Remote_Channel(CH6_PIN)
-                            };
+#ifdef USE_UIM
+  UIM_Controller uim = UIM_Controller();
+#endif
 
-Remote_Control remote = Remote_Control(channels);
+Remote_Control remote = Remote_Control();
 
 void setup() {
-  setupChannels();
-	uim.Begin();
+  #ifdef USE_UIM
+	  uim.Begin();
+  #endif
   setupTimer();
 }
 
-long now = 0;
-long lastRun = 0;
-
 // the loop function runs over and over again until power down or reset
 void loop() {
-  now = millis();
-
-  if(now > lastRun + TIME_LCD_UPDATE) {
-    uim.home();
-    car.IsOverTemp() ? uim.print("Motor Over Temp") : uim.print("Running...");
-    uim.print("     ");
-    uim.setCursor(0,1);
-    uim.print(car.GetLTemp());
-    uim.print(" C");
-    uim.setCursor(0,8);
-    uim.print(car.GetRTemp());
-    uim.print(" C");
-  }
-
-  car.SetEStop(remote.GetEStop());
-  car.SetMode(remote.GetMode());
-  
-  car.SetAcceleration(map(remote.GetLKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
-  car.SetMaxSpeed(map(remote.GetRKnob(), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
-
-  car.SetThrottle(remote.GetThrottle());
-
-  car.SetSteer(remote.GetSteering());
-
-  remote.Listen();
-  uim.HandleEvents();
-}
-
-void setupChannels() {
-  channels[STEER_IDX].Startup([]{channels[STEER_IDX].ListenInterrupt();});
-  channels[THROTTLE_IDX].Startup([]{channels[THROTTLE_IDX].ListenInterrupt();});
-  channels[ESTOP_IDX].Startup([]{channels[ESTOP_IDX].ListenInterrupt();});
-  channels[MODE_IDX].Startup([]{channels[MODE_IDX].ListenInterrupt();});
-  channels[CH5_IDX].Startup([]{channels[CH5_IDX].ListenInterrupt();});
-  channels[CH6_IDX].Startup([]{channels[CH6_IDX].ListenInterrupt();});
+  car.SetAcceleration(map(remote.GetChannel(CH7_IDX), MIN_KNOB_VAL, MAX_KNOB_VAL, FASTEST_ACCEL, SLOWEST_ACCEL));
+  car.SetMaxSpeed(map(remote.GetChannel(CH5_IDX), MIN_KNOB_VAL, MAX_KNOB_VAL, 0, PWM_MAX));
+  remote.SetFeedbackVal(car.GetTemp()/2);
+  car.Calculate();
+  #if defined(USE_UIM)
+    uim.HandleEvents(car.GetStats());
+  #endif
 }
 
 void setupTimer() {
   noInterrupts(); // disable all interrupts
+#ifdef MEGA_BOARD
   TCCR5A = 0;
   TCCR5B = 0;
 
   TCNT5 = TIMER_PRELOAD; 
   TCCR5B |= TIMER_PRESCALER;    
   TIMSK5 |= (1 << TOIE5); // enable timer overflow interrupt
+#endif
+
+#ifdef DUE_BOARD
+  Timer5.attachInterrupt(Threads);
+	Timer5.start(MOTOR_THREAD*1000); //*1000 converts to microseconds
+#endif
   interrupts(); // enable all interrupts
 }
 
+void Threads() {
+  car.SetRemote(remote.GetRemote());
+  car.Run();
+}
+
+#ifdef MEGA_BOARD
 ISR(TIMER5_OVF_vect) // interrupt service routine that wraps a user defined function supplied by attachInterrupt
 {
-  noInterrupts();
-  car.Run();
+  //noInterrupts();
+  Threads();
   TCNT5 = TIMER_PRELOAD;  // preload timer
-  interrupts();
+  //interrupts();
 }
+#endif

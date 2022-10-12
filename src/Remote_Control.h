@@ -4,23 +4,22 @@
 #include <Arduino.h>
 #include "includes.h"
 #include "../config.h"
+#include "../CarStats.h"
 
 class Remote_Control  {
 public:
-    Remote_Control(Remote_Channel channels[]);
-    void Setup();
-    void Listen();
+    Remote_Control();
+    int16_t Read(uint8_t);
     int16_t GetThrottle();
     int16_t GetSteering();
-    int16_t GetLKnob();
-    int16_t GetRKnob();
+    int16_t GetChannel(uint8_t);
     bool GetEStop();
-    int8_t GetMode();
+    bool IsAvailable();
+    void SetFeedbackVal(int16_t);
+    
+    Remote GetRemote();
 private:
-    Remote_Channel* ch[NUM_OF_CHANNELS];
-    uint8_t _channelToListen = 0;
-
-    int16_t Read(uint8_t);
+    PPMReader _channelsIn = PPMReader(PPM_STREAM_PIN, NUM_OF_CHANNELS);
     int16_t mapControlChannel(int16_t);
     int16_t mapKnobChannel(int16_t);
 };

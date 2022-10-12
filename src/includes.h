@@ -5,7 +5,7 @@
 #include "Motor.h"
 
 #include "Remote_Control.h"
-#include "Remote_Channel.h"
+#include "lib/PPM-reader/src/PPMReader.h"
 
 #include "Switch.h"
 
