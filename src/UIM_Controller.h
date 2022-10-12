@@ -7,6 +7,7 @@
 #include "lib/Adafruit_RGB_LCD_Shield_Library/utility/Adafruit_MCP23017.h"
 #include "Button_Controller.h"
 #include "../config.h"
+#include "../CarStats.h"
 
 //LCD Colors
 #define RED 0x1
@@ -24,41 +25,80 @@
 #define BTN_RIGHT 3
 #define BTN_SELECT 4
 
-#define TIME_LCD_UPDATE 100 //ms between display updates
-#define TIME_BUTTON_READ 10 //ms between button reads
+#define NUM_OF_SCREENS 3 //1 based index. does not include the welcome screen.
 
-#define NUM_OF_SCREENS 2 //0 based index
+//custom Characters
+#define FWD_ARROW_CHAR (byte)0
+#define BACK_ARROW_CHAR (byte)0
+#define DEGREE_CHAR (byte)1
+//custom characters
+ const uint8_t PROGMEM fwdArrowChar[8]  {
+    B00000,
+    B00100,
+    B01110,
+    B10101,
+    B00100,
+    B00100,
+    B00100,
+    B00000
+  };
 
-class UIM_Controller : public Adafruit_RGBLCDShield {
+const uint8_t PROGMEM backArrowChar[8] = {
+    B00000,
+    B00100,
+    B00100,
+    B00100,
+    B10101,
+    B01110,
+    B00100,
+    B00000
+  };
+
+  const uint8_t PROGMEM degreeChar[8] = {
+    B01100,
+    B10010,
+    B10010,
+    B01100,
+    B00000,
+    B00000,
+    B00000,
+    B00000
+  };
+
+class UIM_Controller : private Adafruit_RGBLCDShield {
 public:
-  UIM_Controller(String _startMsg = "");
+  UIM_Controller();
 
   // @brief setups and starts the display with the welcome message.
   void Begin();
 
   // @brief Screen 1 - FWD, REV, HILO
-  void HandleEvents();
+  void HandleEvents(CarStats car);
   
 private:
-  String _startMessage = "";
-
+  long _lastScreenChange = 0;
   long _lastLCDUpdate = 0;
   long _lastButtonRead = 0;
 
-  uint8_t _currentScreen = 0;
+  uint8_t _screenCount = 0;
+  bool _scrollScreens = false;
+  bool _bootScreen = true;
 
-  void SetScreen(uint8_t);
+  CarStats _car;
+
+  void PrintVal(int16_t, uint8_t, bool hasSign = false);
+
+  void SetScreen();
   void SetScreenWelcome();
-  void SetScreenPedals(bool inputs[3]);
-  void SetScreenRemote();
+  void SetScreenTemps(bool);
+  void SetScreenRemoteMain(bool);
+  void SetScreenRemoteAux(bool);
+  void SetScreenMainBanner(uint8_t);
 
-  long val = 0;
-
+  void BacklightController();
   void ReadButtons();
 
   void ButtonPressed(uint8_t);
-  
-  bool IsPressed(uint8_t, uint8_t);
   
   Button_Controller Btn[BTN_NUMBER] = {
                                         Button_Controller(BUTTON_UP), 

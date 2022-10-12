@@ -12,23 +12,29 @@ Motor::Motor(uint8_t enablePin, uint8_t fwdPin, uint8_t backPin, uint8_t tempPin
 
 void Motor::Start() {
     _isRunning = true;
-    //_speed = 0;
+    _estopActive = false;
     Enable();
 }
 
 void Motor::Stop() {
     _isRunning = false;
     _targetSpeed = 0;
-    Disable();
 }
 
 void Motor::Run() {
-    if(IsOverTemp()) {
+    if(_overTempFault) {
         Stop();
-    } else {
-        IsRunning() ? _targetSpeed = _setSpeed : NULL ;
-        AccelToSpeed();
+        Disable();
+    } else if(IsRunning()) {
+        _targetSpeed = _setSpeed;
+    } else if(!_estopActive && getSpeed() == 0) {
+        Disable();
     }
+    AccelToSpeed();
+}
+
+void Motor::Calculate() {
+    IsOverTemp();
 }
 
 bool Motor::IsRunning() {
@@ -79,7 +85,7 @@ void Motor::setAcceleration(uint16_t accel) {
         _acceleration = accel;
     }
 
-     _accelStep = MOTOR_THREAD * PWM_MAX/_acceleration;
+     _accelStep = MOTOR_THREAD * MAX_FWD/_acceleration;
 }
 
 uint16_t Motor::getAcceleration() {
@@ -90,11 +96,14 @@ void Motor::Startup() {
     pinMode(_fwdPin, OUTPUT);
     pinMode(_backPin, OUTPUT);
     pinMode(_enablePin, OUTPUT);
+    digitalWrite(_enablePin, LOW);
+    digitalWrite(_backPin, LOW);
+    digitalWrite(_fwdPin, LOW);
 }
 
 void Motor::setMaxSpeed(int16_t newMaxSpeed) {
-    if(newMaxSpeed > PWM_MAX || newMaxSpeed <  PWM_MAX * -1) {
-        _maxSpeed = PWM_MAX;
+    if(newMaxSpeed > MAX_FWD || newMaxSpeed <  MAX_REV) {
+        _maxSpeed = MAX_FWD;
     }
     else {
         _maxSpeed = newMaxSpeed;
@@ -127,11 +136,11 @@ void Motor::JumpToSpeed() {
 }
 
 void Motor::WriteSpeed() {
-    if(_speed > PWM_MAX) {
-        _speed = PWM_MAX;
-    } else if(_speed <  PWM_MAX * -1) {
-        _speed =  -1 * PWM_MAX;
-    }
+    // if(_speed > MAX_FWD) {
+    //     _speed = MAX_FWD;
+    // } else if(_speed <  MAX_REV) {
+    //     _speed =  -1 * MAX_REV;
+    // }
 
     if(_speed >= 0) {
         analogWrite(_fwdPin, _speed);
@@ -155,6 +164,7 @@ void Motor::EStop() {
     _targetSpeed = 0;
     JumpToSpeed();
     _isRunning = false;
+    _estopActive = true;
 }
 
 /*
